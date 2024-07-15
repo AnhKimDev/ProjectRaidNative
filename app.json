@@ -5,10 +5,10 @@
     "slug": "ProjectRaid",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Logo_noBG.ico",
+    "icon": "./assets/icons/Logo.ico",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Logo_noBG.png",
+      "image": "./assets/images/Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,12 +17,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Logo_noBG.ico",
+        "foregroundImage": "./assets/icons/Logo.ico",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/Logo_noBG.png"
+      "favicon": "./assets/image/Logo.png"
+    },
+
+    "expo": {
+      "assetBundlePatterns": ["**/*"]
     },
     "plugins": ["expo-router"]
   }

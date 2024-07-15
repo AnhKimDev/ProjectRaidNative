@@ -1,5 +1,5 @@
-import LogoIcon from "../assets/icons/LogoIcon.ico";
+import Logo from "../assets/icons/Logo";
 
 export default {
-  LogoIcon,
+  Logo,
 };

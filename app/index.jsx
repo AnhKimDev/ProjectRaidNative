@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { Text, View } from "react-native";
 import { Link } from "expo-router";
+const Logo = require("./../assets/images/Logo.png");
 
 export default function App() {
   return (

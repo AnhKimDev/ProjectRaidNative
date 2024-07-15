@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const availability = () => {
+const Availability = () => {
   return (
     <View>
-      <Text>availability</Text>
+      <Text>Availability</Text>
     </View>
   );
 };
 
-export default availability;
+export default Availability;
 
 const styles = StyleSheet.create({});

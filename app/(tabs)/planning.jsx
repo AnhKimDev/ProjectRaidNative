@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const planning = () => {
+const Planning = () => {
   return (
     <View>
-      <Text>planning</Text>
+      <Text>Planning</Text>
     </View>
   );
 };
 
-export default planning;
+export default Planning;
 
 const styles = StyleSheet.create({});
