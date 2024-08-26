@@ -1,14 +1,23 @@
 import { StatusBar } from "expo-status-bar";
-import { Text, View } from "react-native";
+import { Text, View, Image } from "react-native";
 import { Link } from "expo-router";
-const Logo = require("./../assets/images/Logo.png");
+import Logo from "./../assets/images/Logo.png";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-3xl">This is index.jsx</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white",
+      }}
+    >
+      <Image source={Logo} style={{ width: 350, height: 350 }} />
+      <Text style={{ fontSize: 24 }}>Welcome to Project Raid</Text>
       <StatusBar style="auto" />
-      <Link href="/availability" style={{ color: "blue" }}>
+      <Link href="/Availability" style={{ color: "blue" }}>
         Go to Availability
       </Link>
     </View>
