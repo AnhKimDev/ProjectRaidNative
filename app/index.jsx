@@ -14,10 +14,11 @@ export default function App() {
         backgroundColor: "white",
       }}
     >
-      <Image source={Logo} style={{ width: 350, height: 350 }} />
       <Text style={{ fontSize: 24 }}>Welcome to Project Raid</Text>
+      <Image source={Logo} style={{ width: 350, height: 350 }} />
+
       <StatusBar style="auto" />
-      <Link href="/Availability" style={{ color: "blue" }}>
+      <Link href="/Availability" style={{ fontSize: 24 }}>
         Go to Availability
       </Link>
     </View>

@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import AvailabilityWidget from "../../components/AvailabilityWidget";
 
 const Availability = () => {
   return (
     <View>
-      <Text>Availability</Text>
+      <AvailabilityWidget></AvailabilityWidget>
     </View>
   );
 };
