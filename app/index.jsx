@@ -2,7 +2,6 @@ import { StatusBar } from "expo-status-bar";
 import { Text, View, Image } from "react-native";
 import { Link } from "expo-router";
 import Logo from "./../assets/images/Logo.png";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   return (
