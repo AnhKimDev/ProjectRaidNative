@@ -36,19 +36,26 @@ export default {
   },
   gridContainer: {
     padding: 16,
+    flexDirection: "column",
+    height: 450,
+  },
+  userColumn: {
     flexDirection: "row",
-    flexWrap: "wrap",
+  },
+  hourColumn: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   hourRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "gray",
   },
   hourCell: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
+    margin: 2,
     justifyContent: "center",
     alignItems: "center",
     borderColor: "gray",
@@ -68,8 +75,9 @@ export default {
     alignItems: "center",
   },
   userName: {
-    width: 80,
-    textAlign: "left",
+    width: 35,
+    margin: 2,
+    textAlign: "center",
     fontSize: 16,
     color: "white",
   },
@@ -94,5 +102,9 @@ export default {
     backgroundColor: "blue",
     padding: 8,
     borderRadius: 4,
+  },
+  userimage: {
+    width: 200,
+    height: 200,
   },
 };

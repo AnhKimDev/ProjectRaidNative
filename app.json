@@ -1,14 +1,12 @@
 {
   "expo": {
     "name": "ProjectRaid",
-    "scheme": "ProjectRaid",
+    "scheme": ["projectraid"],
     "slug": "ProjectRaid",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/Logo.ico",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/Logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,17 +15,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/Logo.ico",
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/image/Logo.png"
-    },
-
-    "expo": {
-      "assetBundlePatterns": ["**/*"]
-    },
+    "web": {},
     "plugins": ["expo-router"]
   }
 }

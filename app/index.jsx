@@ -17,7 +17,7 @@ export default function App() {
       <Image source={Logo} style={{ width: 350, height: 350 }} />
 
       <StatusBar style="auto" />
-      <Link href="/Availability" style={{ fontSize: 24 }}>
+      <Link href="/availability" style={{ fontSize: 24 }}>
         Go to Availability
       </Link>
     </View>

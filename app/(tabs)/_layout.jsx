@@ -3,11 +3,11 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons"; // Import icons
-import Home from "./Home";
-import Availability from "./Availability";
-import Planning from "./Planning";
-import Info from "./Info";
-import Settings from "./Settings";
+import Home from "./home";
+import Availability from "./availability";
+import Planning from "./planning";
+import Info from "./info";
+import Settings from "./settings";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +36,7 @@ const TabsLayout = () => {
             tabBarIcon: ({ color, focused }) => (
               <Ionicons name={tab.icon} size={24} color={color} />
             ),
+            headerShown: false,
           }}
         />
       ))}
