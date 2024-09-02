@@ -1,6 +1,6 @@
 # Project Raid
 
-<img src="Logo_noBG.png" alt="project raid logo" style="display:block; margin: auto; width: 250px">
+<img src="/assets/images/Logo_noBG.png" alt="project raid logo" style="display:block; margin: auto; width: 250px">
 
 ## What Is Project Raid?
 
