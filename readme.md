@@ -4,24 +4,31 @@
 
 ## What Is Project Raid?
 
-Project Raid is a powerful organizational tool designed to streamline group coordination. Whether you’re organizing an event, planning team meetings, or scheduling collaborative work sessions, this platform has you covered.
+Project Raid is a versatile organizational tool designed to enhance group coordination. Whether you’re organizing an event, planning team meetings, or scheduling collaborative work sessions, this platform simplifies the process. With features like customizable notifications, real-time updates, and an intuitive interface, Project Raid ensures you never miss an important event or schedule change. The platform automatically calculates overlapping timeframes, helping you find the best time slots for everyone involved.
 
-### Planned Key Features:
+## Planned Key Features:
 
-- **Notifications:**  
-  Never miss any events or changes to them that you signed up for!
+- **Customizable Notifications:**  
+  Tailor notifications to your preferences, ensuring you only receive the most relevant updates.
+- **Real-Time Updates:** <br>
+  Receive instant updates on any changes to schedules or events.
 - **Intuitive UI:**  
   Input your available times effortlessly. The program will automatically calculate overlapping timeframes and visualize them in an intuitive way.
 - **Optimal Time Coordination:**  
   Discover the best time slots when everyone is available. No more missed opportunities due to conflicting schedules.
-- **Future Enhancements:**  
-  We’re committed to continuous improvement. Upcoming features include importing available times from Google Calendar, support for varying team sizes, and recurring events.
+- **Future Updates:**  
+  We’re committed to continuous improvement. Upcoming features may include importing available times from Google Calendar, support for varying team sizes, customizable themes, cross-platofmr support and recurring events.
 
-### Why Choose Project Raid?
+## Why Choose Project Raid?
 
-- **Efficiency:** Save time and reduce frustration by coordinating effortlessly.
-- **Collaboration:** Bring your team together seamlessly.
-- **Flexibility:** Adapt to changing schedules with ease.
+- **User-Friendly:**<br>
+  Designed with user experience in mind, making it easy for anyone to use.
+- **Efficiency:**<br> Save time and reduce frustration by coordinating effortlessly.
+- **Collaboration:**<br> Bring your team together seamlessly.
+- **Flexibility:**<br> Adapt to changing schedules with ease.
+- **Community-Driven:**<br>
+  Benefit from a platform that evolves based on user feedback and community contributions.
+  <br>
 
 ## Changelog
 
