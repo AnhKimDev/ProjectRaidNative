@@ -4,7 +4,7 @@ import AvailabilityWidget from "../../components/AvailabilityWidget";
 
 const Availability = () => {
   return (
-    <View style={{ flex: 1, backgroundColor: "red" }}>
+    <View style={{ flex: 1 }}>
       <AvailabilityWidget></AvailabilityWidget>
     </View>
   );

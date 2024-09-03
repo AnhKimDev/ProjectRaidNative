@@ -76,9 +76,7 @@ const AvailabilityWidget = () => {
       <View style={styles.summaryContainer}>
         <TextInput
           style={styles.textInput}
-          value={`Starting Time: ${availability[0].hours[0]} - End Time: ${
-            availability[0].hours[availability[0].hours.length - 1]
-          }`}
+          value={`Starting Time: ${getHighlightedHours().length ? Math.min(...getHighlightedHours()) : ""} - End Time: ${getHighlightedHours().length ? Math.max(...getHighlightedHours()) : ""}`}
           editable={false}
         />
         <TextInput
@@ -88,9 +86,8 @@ const AvailabilityWidget = () => {
         />
       </View>
 
-      <View style={styles.gridContainer}>
+      <View style={[styles.gridContainer, { flexDirection: "column" }]}>
         <View style={styles.userColumn}>
-          <Text style={styles.userName}>&nbsp;</Text>
           {availability.map((user, userIndex) => (
             <View key={user.name} style={styles.userNameContainer}>
               <Text style={styles.userName}>{user.name}</Text>
@@ -103,14 +100,24 @@ const AvailabilityWidget = () => {
                   name="person"
                   size={25}
                   color="#ccc"
-                  style={{ alignSelf: "center", margin: 5 }}
+                  style={{
+                    alignSelf: "center",
+                    margin: 5,
+                  }}
                 />
               )}
             </View>
           ))}
         </View>
-        <ScrollView style={{ width: "100%" }}>
-          <View style={{ flexDirection: "row" }}>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
             <View style={styles.hourColumn}>
               {Array(HOURS_IN_A_DAY)
                 .fill(0)
