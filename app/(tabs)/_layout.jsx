@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: "#1A1D23",
     borderTopWidth: 0,
-    height: 60,
+    height: 75,
+    paddingBottom: 10,
   },
 });
 

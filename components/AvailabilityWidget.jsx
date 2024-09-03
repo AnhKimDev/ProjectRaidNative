@@ -96,15 +96,21 @@ const AvailabilityWidget = () => {
                 style={styles.image}
               />
               {!user.image && (
-                <Ionicons
-                  name="person"
-                  size={25}
-                  color="#ccc"
+                <View
                   style={{
-                    alignSelf: "center",
-                    margin: 5,
+                    width: 40, // adjust the size to fit your icon
+                    height: 40,
+                    margin: 4,
+                    borderRadius: 20, // half of the size to make it circular
+                    borderWidth: 2,
+                    borderColor: "black",
+                    backgroundColor: "#333333",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                />
+                >
+                  <Ionicons name="person" size={25} color="#ccc" />
+                </View>
               )}
             </View>
           ))}
@@ -123,7 +129,7 @@ const AvailabilityWidget = () => {
               {Array(HOURS_IN_A_DAY)
                 .fill(0)
                 .map((_, hour) => (
-                  <Text key={hour} style={styles.hourCell}>
+                  <Text key={hour} style={styles.lefthourCell}>
                     {hour}
                   </Text>
                 ))}
@@ -150,15 +156,32 @@ const AvailabilityWidget = () => {
             ))}
           </View>
         </ScrollView>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={{ color: "white" }}>Set Availability</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={{ color: "white" }}>Suggest Raid</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button}>
+            <Text
+              style={{
+                color: "white",
+                textShadowColor: "black",
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 1,
+              }}
+            >
+              Set Availability
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text
+              style={{
+                color: "white",
+                textShadowColor: "black",
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 1,
+              }}
+            >
+              Suggest Raid
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
