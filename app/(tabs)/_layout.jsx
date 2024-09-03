@@ -1,8 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons"; // Import icons
+import { Ionicons } from "@expo/vector-icons";
 import Home from "./home";
 import Availability from "./availability";
 import Planning from "./planning";
@@ -11,9 +10,18 @@ import Settings from "./settings";
 
 const Tab = createBottomTabNavigator();
 
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: "#1A1D23",
+    borderTopWidth: 0,
+    height: 60,
+  },
+});
+
 const screenOptions = {
-  activeTintColor: "#006600",
+  activeTintColor: "#34AADC",
   inactiveTintColor: "#8e8e93",
+  tabBarStyle: styles.tabBar,
 };
 
 const tabs = [
@@ -45,5 +53,3 @@ const TabsLayout = () => {
 };
 
 export default TabsLayout;
-
-const styles = StyleSheet.create({});

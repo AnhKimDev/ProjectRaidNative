@@ -112,6 +112,7 @@ const AvailabilityWidget = () => {
         <ScrollView
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
+          scroll
         >
           <View
             style={{
@@ -137,7 +138,7 @@ const AvailabilityWidget = () => {
                       key={`${userIndex}-${hour}`}
                       style={[
                         styles.hourCell,
-                        user.hours.includes(hour) ? styles.green : styles.red,
+                        user.hours.includes(hour) ? styles.yellow : styles.red,
                         getHighlightedHours().includes(hour)
                           ? styles.highlighted
                           : null,

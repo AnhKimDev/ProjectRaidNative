@@ -72,7 +72,7 @@ export default StyleSheet.create({
     margin: 4,
     justifyContent: "center",
     alignItems: "center",
-    borderColor: "#E5E5E5",
+    borderColor: "black",
     borderWidth: 1,
     fontSize: 18,
     color: "white",
@@ -91,13 +91,16 @@ export default StyleSheet.create({
   green: {
     backgroundColor: "#2ECC71",
   },
+  yellow: {
+    backgroundColor: "#FFF000",
+  },
   red: {
     backgroundColor: "#E74C3C",
   },
   highlighted: {
+    backgroundColor: "#2ECC71",
     borderWidth: 2,
-    borderColor: "#3498DB",
-    borderStyle: "dotted",
+    borderColor: "black",
   },
   buttonContainer: {
     flexDirection: "row",

@@ -10,7 +10,7 @@ export default function App() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "white",
+        backgroundColor: "#2C3F50",
       }}
     >
       <Text style={{ fontSize: 24 }}>Welcome to Project Raid</Text>
