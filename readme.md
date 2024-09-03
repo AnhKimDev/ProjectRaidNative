@@ -17,7 +17,7 @@ Project Raid is a versatile organizational tool designed to enhance group coordi
 - **Optimal Time Coordination:**  
   Discover the best time slots when everyone is available. No more missed opportunities due to conflicting schedules.
 - **Future Updates:**  
-  We’re committed to continuous improvement. Upcoming features may include importing available times from Google Calendar, support for varying team sizes, customizable themes, cross-platofmr support and recurring events.
+  We’re committed to continuous improvement. Upcoming features may include importing available times from Google Calendar, support for varying team sizes, customizable themes, cross-platform support and recurring events.
 
 ## Why Choose Project Raid?
 
