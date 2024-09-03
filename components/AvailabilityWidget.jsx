@@ -11,7 +11,6 @@ import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
 
 const HOURS_IN_A_DAY = 24;
-const IMAGE_SIZE = 24;
 
 const AvailabilityWidget = () => {
   const [date, setDate] = useState(new Date());
@@ -88,28 +87,29 @@ const AvailabilityWidget = () => {
           editable={false}
         />
       </View>
-      <ScrollView>
-        <View style={styles.gridContainer}>
-          <View style={styles.userColumn}>
-            <Text style={styles.userName}>&nbsp;</Text>
-            {availability.map((user, userIndex) => (
-              <View key={user.name} style={styles.userNameContainer}>
-                <Text style={styles.userName}>{user.name}</Text>
-                <Image
-                  source={user.image ? { uri: user.image } : null}
-                  style={styles.image}
+
+      <View style={styles.gridContainer}>
+        <View style={styles.userColumn}>
+          <Text style={styles.userName}>&nbsp;</Text>
+          {availability.map((user, userIndex) => (
+            <View key={user.name} style={styles.userNameContainer}>
+              <Text style={styles.userName}>{user.name}</Text>
+              <Image
+                source={user.image ? { uri: user.image } : null}
+                style={styles.image}
+              />
+              {!user.image && (
+                <Ionicons
+                  name="person"
+                  size={25}
+                  color="#ccc"
+                  style={{ alignSelf: "center", margin: 5 }}
                 />
-                {!user.image && (
-                  <Ionicons
-                    name="person"
-                    size={25}
-                    color="#ccc"
-                    style={{ alignSelf: "center", margin: 5 }}
-                  />
-                )}
-              </View>
-            ))}
-          </View>
+              )}
+            </View>
+          ))}
+        </View>
+        <ScrollView style={{ width: "100%" }}>
           <View style={{ flexDirection: "row" }}>
             <View style={styles.hourColumn}>
               {Array(HOURS_IN_A_DAY)
@@ -120,6 +120,7 @@ const AvailabilityWidget = () => {
                   </Text>
                 ))}
             </View>
+
             {availability.map((user, userIndex) => (
               <View key={user.name} style={styles.hourColumn}>
                 {Array(HOURS_IN_A_DAY)
@@ -140,14 +141,15 @@ const AvailabilityWidget = () => {
               </View>
             ))}
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button}>
-          <Text>Set Availability</Text>
+          <Text style={{ color: "white" }}>Set Availability</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
-          <Text>Suggest Raid</Text>
+          <Text style={{ color: "white" }}>Suggest Raid</Text>
         </TouchableOpacity>
       </View>
     </View>

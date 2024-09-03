@@ -1,6 +1,7 @@
 export default {
   mainContainer: {
     backgroundColor: "#3C4C6C",
+    flex: 1,
     padding: 16,
   },
   header: {
@@ -36,15 +37,15 @@ export default {
   },
   gridContainer: {
     padding: 16,
+    flex: 1,
     flexDirection: "column",
-    height: 450,
   },
   userColumn: {
     flexDirection: "row",
   },
   hourColumn: {
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
   },
   hourRow: {
