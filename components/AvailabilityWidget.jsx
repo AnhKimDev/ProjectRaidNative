@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,15 +9,35 @@ import {
 } from "react-native";
 import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
-import { users } from "./data";
+import { users, availability as availabilityData } from "./data";
 
 const HOURS_IN_A_DAY = 24;
 
 const AvailabilityWidget = () => {
   const [date, setDate] = useState(new Date());
-  const [availability, setAvailability] = useState(users);
+  const [availability, setAvailability] = useState(() => {
+    console.log("line 19");
+    if (users.length === 0) {
+      return [];
+    } else {
+      return Array(users.length).fill({
+        hours: Array(HOURS_IN_A_DAY).fill(false),
+      });
+    }
+  });
 
-  // Extracted functions for better readability
+  useEffect(() => {
+    console.log("line 30");
+    if (availabilityData.length > 0) {
+      const newAvailability = availabilityData.filter(
+        (item) => item.date === date.toISOString().split("T")[0]
+      );
+      setAvailability(newAvailability);
+    } else {
+      setAvailability([]);
+    }
+  }, [date]);
+
   const handlePrevDate = () => {
     setDate(new Date(date.setDate(date.getDate() - 1)));
   };
@@ -30,7 +50,11 @@ const AvailabilityWidget = () => {
     const newAvailability = [...availability];
     const userHours = newAvailability[userIndex].hours;
     const hourIndex = userHours.indexOf(hour);
-    hourIndex !== -1 ? userHours.splice(hourIndex, 1) : userHours.push(hour);
+    const newHours =
+      hourIndex !== -1
+        ? userHours.filter((h) => h !== hour)
+        : [...userHours, hour];
+    newAvailability[userIndex].hours = newHours;
     setAvailability(newAvailability);
   };
 
@@ -43,7 +67,7 @@ const AvailabilityWidget = () => {
       }
     }
     return hours;
-  }, [availability]);
+  });
 
   // Extracted variables for better readability
   const startTime = highlightedHours.length
@@ -77,20 +101,32 @@ const AvailabilityWidget = () => {
 
       <View style={[styles.gridContainer, { flexDirection: "column" }]}>
         <View style={styles.userColumn}>
-          {availability.map((user, userIndex) => (
-            <View key={user.name} style={styles.userNameContainer}>
-              <Text style={styles.userName}>{user.name}</Text>
-              <Image
-                source={user.image ? { uri: user.image } : null}
-                style={styles.image}
-              />
-              {!user.image && (
-                <View style={styles.userImagePlaceholder}>
-                  <Ionicons name="person" size={25} color="#ccc" />
+          {availability.map((availabilityItem, userIndex) => {
+            const user = users.find(
+              (user) => user.userId === availabilityItem.userId
+            );
+            if (user) {
+              return (
+                <View
+                  key={availabilityItem.userId}
+                  style={styles.userNameContainer}
+                >
+                  <Text style={styles.userName}>{user.name}</Text>
+                  <Image
+                    source={user.image ? { uri: user.image } : null}
+                    style={styles.image}
+                  />
+                  {!user.image && (
+                    <View style={styles.userImagePlaceholder}>
+                      <Ionicons name="person" size={25} color="#ccc" />
+                    </View>
+                  )}
                 </View>
-              )}
-            </View>
-          ))}
+              );
+            } else {
+              return null;
+            }
+          })}
         </View>
         <ScrollView
           showsHorizontalScrollIndicator={false}
@@ -113,7 +149,7 @@ const AvailabilityWidget = () => {
             </View>
 
             {availability.map((user, userIndex) => (
-              <View key={user.name} style={styles.hourColumn}>
+              <View key={user.userId} style={styles.hourColumn}>
                 {Array(HOURS_IN_A_DAY)
                   .fill(0)
                   .map((_, hour) => (
