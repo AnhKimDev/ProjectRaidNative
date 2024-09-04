@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -9,79 +9,68 @@ import {
 } from "react-native";
 import styles from "./styles";
 import { Ionicons } from "@expo/vector-icons";
+import { users } from "./data";
 
 const HOURS_IN_A_DAY = 24;
 
 const AvailabilityWidget = () => {
   const [date, setDate] = useState(new Date());
-  const [availability, setAvailability] = useState([
-    { name: "User 1", hours: [8, 9, 10, 11, 12], image: "" },
-    { name: "User 2", hours: [9, 10, 11, 12, 13], image: "" },
-    { name: "User 3", hours: [10, 11, 12, 13, 14], image: "" },
-    { name: "User 4", hours: [11, 12, 13, 14, 15], image: "" },
-    { name: "User 5", hours: [12, 13, 14, 15, 16], image: "" },
-    { name: "User 6", hours: [13, 14, 15, 16, 17], image: "" },
-    { name: "User 7", hours: [14, 15, 16, 17, 18], image: "" },
-    { name: "User 8", hours: [15, 16, 17, 18, 19], image: "" },
-  ]);
+  const [availability, setAvailability] = useState(users);
 
-  const handleDateChange = (direction) => {
-    const newDate = new Date(date);
-    if (direction === "prev") {
-      newDate.setDate(newDate.getDate() - 1);
-    } else {
-      newDate.setDate(newDate.getDate() + 1);
-    }
-    setDate(newDate);
+  // Extracted functions for better readability
+  const handlePrevDate = () => {
+    setDate(new Date(date.setDate(date.getDate() - 1)));
+  };
+
+  const handleNextDate = () => {
+    setDate(new Date(date.setDate(date.getDate() + 1)));
   };
 
   const handleAvailabilityChange = (userIndex, hour) => {
     const newAvailability = [...availability];
-    newAvailability[userIndex].hours.includes(hour)
-      ? newAvailability[userIndex].hours.splice(
-          newAvailability[userIndex].hours.indexOf(hour),
-          1
-        )
-      : newAvailability[userIndex].hours.push(hour);
+    const userHours = newAvailability[userIndex].hours;
+    const hourIndex = userHours.indexOf(hour);
+    hourIndex !== -1 ? userHours.splice(hourIndex, 1) : userHours.push(hour);
     setAvailability(newAvailability);
   };
 
-  const getHighlightedHours = () => {
-    const highlightedHours = [];
+  // Memoized function to calculate highlighted hours
+  const highlightedHours = useMemo(() => {
+    const hours = [];
     for (let hour = 0; hour < HOURS_IN_A_DAY; hour++) {
       if (availability.every((user) => user.hours.includes(hour))) {
-        highlightedHours.push(hour);
+        hours.push(hour);
       }
     }
-    return highlightedHours;
-  };
+    return hours;
+  }, [availability]);
+
+  // Extracted variables for better readability
+  const startTime = highlightedHours.length
+    ? Math.min(...highlightedHours)
+    : "";
+  const endTime = highlightedHours.length ? Math.max(...highlightedHours) : "";
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.arrowButton}
-          onPress={() => handleDateChange("prev")}
-        >
+        <TouchableOpacity style={styles.arrowButton} onPress={handlePrevDate}>
           <Text style={styles.arrowText}>‹</Text>
         </TouchableOpacity>
         <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
-        <TouchableOpacity
-          style={styles.arrowButton}
-          onPress={() => handleDateChange("next")}
-        >
+        <TouchableOpacity style={styles.arrowButton} onPress={handleNextDate}>
           <Text style={styles.arrowText}>›</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.summaryContainer}>
         <TextInput
           style={styles.textInput}
-          value={`Starting Time: ${getHighlightedHours().length ? Math.min(...getHighlightedHours()) : ""} - End Time: ${getHighlightedHours().length ? Math.max(...getHighlightedHours()) : ""}`}
+          value={`Starting Time: ${startTime} - End Time: ${endTime}`}
           editable={false}
         />
         <TextInput
           style={styles.textInput}
-          value={`Available Timeslots: ${getHighlightedHours().join(", ")}`}
+          value={`Available Timeslots: ${highlightedHours.join(", ")}`}
           editable={false}
         />
       </View>
@@ -96,19 +85,7 @@ const AvailabilityWidget = () => {
                 style={styles.image}
               />
               {!user.image && (
-                <View
-                  style={{
-                    width: 40, // adjust the size to fit your icon
-                    height: 40,
-                    margin: 4,
-                    borderRadius: 20, // half of the size to make it circular
-                    borderWidth: 2,
-                    borderColor: "black",
-                    backgroundColor: "#333333",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <View style={styles.userImagePlaceholder}>
                   <Ionicons name="person" size={25} color="#ccc" />
                 </View>
               )}
@@ -145,7 +122,7 @@ const AvailabilityWidget = () => {
                       style={[
                         styles.hourCell,
                         user.hours.includes(hour) ? styles.yellow : styles.red,
-                        getHighlightedHours().includes(hour)
+                        highlightedHours.includes(hour)
                           ? styles.highlighted
                           : null,
                       ]}
@@ -158,28 +135,10 @@ const AvailabilityWidget = () => {
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}>
-            <Text
-              style={{
-                color: "white",
-                textShadowColor: "black",
-                textShadowOffset: { width: 1, height: 1 },
-                textShadowRadius: 1,
-              }}
-            >
-              Set Availability
-            </Text>
+            <Text style={styles.buttonTextStyle}>Set Availability</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
-            <Text
-              style={{
-                color: "white",
-                textShadowColor: "black",
-                textShadowOffset: { width: 1, height: 1 },
-                textShadowRadius: 1,
-              }}
-            >
-              Suggest Raid
-            </Text>
+            <Text style={styles.buttonTextStyle}>Suggest Raid</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -3,7 +3,7 @@ import React from "react";
 
 const Planning = () => {
   return (
-    <View>
+    <View style={{ flex: 1, backgroundColor: "#191970" }}>
       <Text>Planning</Text>
     </View>
   );
