@@ -15,19 +15,11 @@ const HOURS_IN_A_DAY = 24;
 
 const AvailabilityWidget = () => {
   const [date, setDate] = useState(new Date());
-  const [availability, setAvailability] = useState(() => {
-    console.log("line 19");
-    if (users.length === 0) {
-      return [];
-    } else {
-      return Array(users.length).fill({
-        hours: Array(HOURS_IN_A_DAY).fill(false),
-      });
-    }
-  });
+  const [availability, setAvailability] = useState([]);
 
+  //update if date is changed
   useEffect(() => {
-    console.log("line 30");
+    console.log("line 32");
     if (availabilityData.length > 0) {
       const newAvailability = availabilityData.filter(
         (item) => item.date === date.toISOString().split("T")[0]
@@ -38,14 +30,17 @@ const AvailabilityWidget = () => {
     }
   }, [date]);
 
+  //handles arrow left
   const handlePrevDate = () => {
     setDate(new Date(date.setDate(date.getDate() - 1)));
   };
 
+  //handles arrow right
   const handleNextDate = () => {
     setDate(new Date(date.setDate(date.getDate() + 1)));
   };
 
+  //handles onclick on cells
   const handleAvailabilityChange = (userIndex, hour) => {
     const newAvailability = [...availability];
     const userHours = newAvailability[userIndex].hours;
@@ -70,13 +65,61 @@ const AvailabilityWidget = () => {
   });
 
   // Extracted variables for better readability
-  const startTime = highlightedHours.length
-    ? Math.min(...highlightedHours)
-    : "";
-  const endTime = highlightedHours.length ? Math.max(...highlightedHours) : "";
+  const startTime = useMemo(() => {
+    return highlightedHours.length ? Math.min(...highlightedHours) : "";
+  }, [highlightedHours]);
 
-  return (
-    <View style={styles.mainContainer}>
+  const endTime = useMemo(() => {
+    return highlightedHours.length ? Math.max(...highlightedHours) : "";
+  }, [highlightedHours]);
+
+  //renders how the cells are displayed
+  const renderHours = () => {
+    if (availability.length === 0) {
+      // If no data is found, render all hours as empty
+      return users.map((user, userIndex) => (
+        <View key={user.userId} style={styles.hourColumn}>
+          {Array(HOURS_IN_A_DAY)
+            .fill(0)
+            .map((_, hour) => (
+              <TouchableOpacity
+                key={`${userIndex}-${hour}`}
+                style={styles.hourCell}
+              >
+                <Text style={styles.hourText}>{""}</Text>
+              </TouchableOpacity>
+            ))}
+        </View>
+      ));
+    } else {
+      // If data is found, render hours as usual
+      return availability.map((user, userIndex) => (
+        <View key={user.userId} style={styles.hourColumn}>
+          {Array(HOURS_IN_A_DAY)
+            .fill(0)
+            .map((_, hour) => {
+              return (
+                <TouchableOpacity
+                  key={`${userIndex}-${hour}`}
+                  style={[
+                    styles.hourCell,
+                    user.hours.includes(hour) ? styles.yellow : styles.red,
+                    highlightedHours.includes(hour) ? styles.highlighted : null,
+                  ]}
+                  onPress={() => handleAvailabilityChange(userIndex, hour)}
+                >
+                  <Text style={styles.hourText}>{hour}</Text>
+                </TouchableOpacity>
+              );
+            })}
+        </View>
+      ));
+    }
+  };
+
+  //renders the Header with date
+  const renderHeader = () => {
+    return (
       <View style={styles.header}>
         <TouchableOpacity style={styles.arrowButton} onPress={handlePrevDate}>
           <Text style={styles.arrowText}>‹</Text>
@@ -86,19 +129,38 @@ const AvailabilityWidget = () => {
           <Text style={styles.arrowText}>›</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.summaryContainer}>
-        <TextInput
-          style={styles.textInput}
-          value={`Starting Time: ${startTime} - End Time: ${endTime}`}
-          editable={false}
-        />
-        <TextInput
-          style={styles.textInput}
-          value={`Available Timeslots: ${highlightedHours.join(", ")}`}
-          editable={false}
-        />
-      </View>
+    );
+  };
 
+  //renders the summary with startingtime and available timeslots
+  const renderSummary = () => {
+    return (
+      <View style={styles.summaryContainer}>
+        {availability.length > 0 ? (
+          <>
+            <TextInput
+              style={styles.textInput}
+              value={`Starting Time: ${startTime} - End Time: ${endTime}`}
+              editable={false}
+            />
+            <TextInput
+              style={styles.textInput}
+              value={`Available Timeslots: ${highlightedHours.join(", ")}`}
+              editable={false}
+            />
+          </>
+        ) : (
+          <Text style={styles.textInput}>
+            No availability data found for this date.
+          </Text>
+        )}
+      </View>
+    );
+  };
+
+  //renders users, hours and buttons
+  const renderGrid = () => {
+    return (
       <View style={[styles.gridContainer, { flexDirection: "column" }]}>
         <View style={styles.userColumn}>
           {availability.map((availabilityItem, userIndex) => {
@@ -133,11 +195,7 @@ const AvailabilityWidget = () => {
           showsVerticalScrollIndicator={false}
           scroll
         >
-          <View
-            style={{
-              flexDirection: "row",
-            }}
-          >
+          <View style={{ flexDirection: "row" }}>
             <View style={styles.hourColumn}>
               {Array(HOURS_IN_A_DAY)
                 .fill(0)
@@ -147,26 +205,7 @@ const AvailabilityWidget = () => {
                   </Text>
                 ))}
             </View>
-
-            {availability.map((user, userIndex) => (
-              <View key={user.userId} style={styles.hourColumn}>
-                {Array(HOURS_IN_A_DAY)
-                  .fill(0)
-                  .map((_, hour) => (
-                    <TouchableOpacity
-                      key={`${userIndex}-${hour}`}
-                      style={[
-                        styles.hourCell,
-                        user.hours.includes(hour) ? styles.yellow : styles.red,
-                        highlightedHours.includes(hour)
-                          ? styles.highlighted
-                          : null,
-                      ]}
-                      onPress={() => handleAvailabilityChange(userIndex, hour)}
-                    />
-                  ))}
-              </View>
-            ))}
+            {renderHours()}
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
@@ -178,6 +217,14 @@ const AvailabilityWidget = () => {
           </TouchableOpacity>
         </View>
       </View>
+    );
+  };
+
+  return (
+    <View style={styles.mainContainer}>
+      {renderHeader()}
+      {renderSummary()}
+      {renderGrid()}
     </View>
   );
 };
