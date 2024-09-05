@@ -7,7 +7,7 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import styles from "./styles";
+import styles from "./AvailabilityWidgetStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { users, availability as availabilityData } from "./data";
 
@@ -19,7 +19,6 @@ const AvailabilityWidget = () => {
 
   //update if date is changed
   useEffect(() => {
-    console.log("line 32");
     if (availabilityData.length > 0) {
       const newAvailability = availabilityData.filter(
         (item) => item.date === date.toISOString().split("T")[0]
@@ -163,6 +162,7 @@ const AvailabilityWidget = () => {
     return (
       <View style={[styles.gridContainer, { flexDirection: "column" }]}>
         <View style={styles.userColumn}>
+          <View style={[styles.userNameContainer, styles.leftbufferCell]} />
           {availability.map((availabilityItem, userIndex) => {
             const user = users.find(
               (user) => user.userId === availabilityItem.userId
@@ -173,14 +173,14 @@ const AvailabilityWidget = () => {
                   key={availabilityItem.userId}
                   style={styles.userNameContainer}
                 >
-                  <Text style={styles.userName}>{user.name}</Text>
+                  {/* <Text style={styles.userName}>{user.name}</Text> */}
                   <Image
                     source={user.image ? { uri: user.image } : null}
                     style={styles.image}
                   />
                   {!user.image && (
                     <View style={styles.userImagePlaceholder}>
-                      <Ionicons name="person" size={25} color="#ccc" />
+                      <Ionicons name="person" size={20} color="#ccc" />
                     </View>
                   )}
                 </View>
