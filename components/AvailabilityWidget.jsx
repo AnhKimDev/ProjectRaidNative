@@ -162,17 +162,16 @@ const AvailabilityWidget = () => {
     return (
       <View style={[styles.gridContainer, { flexDirection: "column" }]}>
         <View style={styles.userColumn}>
-          <View style={[styles.userNameContainer, styles.leftbufferCell]} />
+          <View style={[styles.userName, styles.leftbufferCell]}>
+            <Text>&#8203;&#8203;</Text>
+          </View>
           {availability.map((availabilityItem, userIndex) => {
             const user = users.find(
               (user) => user.userId === availabilityItem.userId
             );
             if (user) {
               return (
-                <View
-                  key={availabilityItem.userId}
-                  style={styles.userNameContainer}
-                >
+                <View key={availabilityItem.userId} style={styles.userName}>
                   {/* <Text style={styles.userName}>{user.name}</Text> */}
                   <Image
                     source={user.image ? { uri: user.image } : null}
