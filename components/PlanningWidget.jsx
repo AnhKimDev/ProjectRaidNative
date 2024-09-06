@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./PlanningWidgetStyles";
-import { users, availability } from "./data";
+import { availability } from "./data";
 
 const weekdays = [
   "Monday",
@@ -13,20 +13,23 @@ const weekdays = [
   "Saturday",
   "Sunday",
 ];
-
+const userId = "user-1";
+const name = "User 1";
 const HOURS_IN_A_DAY = 24;
 
 const getDateFromDay = (day) => {
   const date = new Date();
-  const dayOfWeek = date.getDay();
+  const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   const dayIndex = weekdays.indexOf(day);
-  const diff = dayIndex - dayOfWeek;
-  date.setDate(date.getDate() + diff);
+  const monday = date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+  date.setDate(monday + dayIndex);
   return date.toISOString().split("T")[0];
 };
 
 const PlanningWidget = () => {
   const [date, setDate] = useState(new Date());
+  const [availability, setAvailability] = useState([]);
+
   const handlePrevDate = () => {
     setDate(new Date(date.setDate(date.getDate() - 1)));
   };
@@ -36,11 +39,17 @@ const PlanningWidget = () => {
   };
 
   const renderHeader = (date, handlePrevDate, handleNextDate) => {
-    const startDate = date.toLocaleDateString();
+    const startDate = new Date(getDateFromDay("Monday"));
     const endDate = new Date(
-      date.setDate(date.getDate() + 6)
-    ).toLocaleDateString();
-    const weekRange = `${startDate} - ${endDate}`;
+      new Date(startDate).setDate(startDate.getDate() + 6)
+    );
+    const startMonth = startDate.toLocaleString("default", { month: "short" });
+    const startDay = startDate.getDate();
+    const startYear = startDate.getFullYear();
+    const endMonth = endDate.toLocaleString("default", { month: "short" });
+    const endDay = endDate.getDate();
+    const endYear = endDate.getFullYear();
+    const weekRange = `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
 
     return (
       <View style={styles.header}>
