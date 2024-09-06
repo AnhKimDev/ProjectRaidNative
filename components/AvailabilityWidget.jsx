@@ -14,7 +14,7 @@ import { users, availability as availabilityData } from "./data";
 const HOURS_IN_A_DAY = 24;
 
 const AvailabilityWidget = () => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(() => new Date(Date.now()));
   const [availability, setAvailability] = useState([]);
 
   //update if date is changed
