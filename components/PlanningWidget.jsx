@@ -25,6 +25,18 @@ const PlanningWidget = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [availability, setAvailability] = useState([]);
+  const [selectedHours, setSelectedHours] = useState({});
+
+  const handleHourPress = (day, hour) => {
+    const date = getDateFromDay(day);
+    const existingHours = selectedHours[date] || [];
+    if (existingHours.includes(hour)) {
+      existingHours.splice(existingHours.indexOf(hour), 1);
+    } else {
+      existingHours.push(hour);
+    }
+    setSelectedHours({ ...selectedHours, [date]: existingHours });
+  };
 
   useEffect(() => {
     const startDate = new Date(getDateFromDay("Monday", date));
@@ -106,13 +118,20 @@ const PlanningWidget = () => {
             const date = getDateFromDay(day);
             const hasData = availability.find((item) => item.date === date);
             const includedHour = hasData && hasData.hours.includes(hour);
+            const isSelected =
+              selectedHours[date] && selectedHours[date].includes(hour);
             return (
               <TouchableOpacity
                 key={`${dayIndex}-${hour}`}
                 style={[
                   styles.hourCell,
-                  includedHour ? styles.green : styles.red,
+                  includedHour
+                    ? styles.green
+                    : isSelected
+                      ? styles.green
+                      : styles.red,
                 ]}
+                onPress={() => handleHourPress(day, hour)}
               >
                 <Text style={styles.hourText}>{hour}</Text>
               </TouchableOpacity>
