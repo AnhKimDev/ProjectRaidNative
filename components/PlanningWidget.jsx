@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./PlanningWidgetStyles";
-import { availability } from "./data";
+import { availability as availabilityData } from "./data";
 
 const weekdays = [
   "Monday",
@@ -13,8 +13,11 @@ const weekdays = [
   "Saturday",
   "Sunday",
 ];
-const userId = "user-1";
-const name = "User 1";
+user = {
+  userId: "user-1",
+  name: "User 1",
+  image: "",
+};
 const HOURS_IN_A_DAY = 24;
 
 const PlanningWidget = () => {
@@ -24,10 +27,22 @@ const PlanningWidget = () => {
   const [availability, setAvailability] = useState([]);
 
   useEffect(() => {
-    const startDate = new Date(getDateFromDay("Monday", startDate));
+    const startDate = new Date(getDateFromDay("Monday", date));
     const endDate = new Date(startDate.getTime() + 6 * 24 * 60 * 60 * 1000);
     setStartDate(startDate);
     setEndDate(endDate);
+    console.log("availabilitydata length:", availabilityData.length);
+    const filteredAvailability = availabilityData.filter((item) => {
+      const itemDate = new Date(item.date);
+      return (
+        item.userId === user.userId &&
+        itemDate &&
+        itemDate >= startDate &&
+        itemDate <= endDate
+      );
+    });
+    setAvailability(filteredAvailability);
+    console.log("filtered availability:", filteredAvailability);
   }, [date]);
 
   const getDateFromDay = (day) => {
@@ -89,19 +104,14 @@ const PlanningWidget = () => {
           .fill(0)
           .map((_, hour) => {
             const date = getDateFromDay(day);
-            const hasData = availability.find(
-              (item) => item.date === date && item.hour === hour
-            );
+            const hasData = availability.find((item) => item.date === date);
+            const includedHour = hasData && hasData.hours.includes(hour);
             return (
               <TouchableOpacity
                 key={`${dayIndex}-${hour}`}
                 style={[
                   styles.hourCell,
-                  hasData
-                    ? hasData.included
-                      ? styles.green
-                      : styles.red
-                    : styles.emptyCell,
+                  includedHour ? styles.green : styles.red,
                 ]}
               >
                 <Text style={styles.hourText}>{hour}</Text>
