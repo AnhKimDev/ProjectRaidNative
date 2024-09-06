@@ -19,41 +19,20 @@ const textShadow = {
 
 const borderRadius = 8;
 const padding = 16;
-const margin = 4; // adjusted margin to add more space between cells
+const margin = 4;
 
-const cell = {
-  flexBasis: "10%",
-  margin,
-  justifyContent: "center",
-  alignItems: "center",
-  flexGrow: 1,
-};
-
-const whiteCenteredText = {
-  color: colors.white,
-  textAlign: "center",
-};
-
-const cellWithWhiteText = {
-  ...cell,
-  ...whiteCenteredText,
-};
-
-const bufferCell = {
-  ...cellWithWhiteText,
-  flexBasis: "7%", // same width as hourCellLeft and lefthourCell
-  fontSize: 18,
-  borderRadius: 8,
-  borderColor: "transparent",
-  borderWidth: 0,
+const styles = {
+  cell: {
+    flexGrow: 1,
+    aspectRatio: 1,
+    margin,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 };
 
 export default StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    padding: 24,
-    backgroundColor: colors.secondary,
-  },
+  mainContainer: { backgroundColor: colors.secondary, flex: 1, padding: 24 },
   header: {
     padding,
     flexDirection: "row",
@@ -62,9 +41,16 @@ export default StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 20,
     marginTop: 20,
-    marginBottom: 20,
     borderColor: colors.black,
     borderWidth: 1,
+  },
+  arrowButton: { padding: padding / 2, borderRadius },
+  arrowText: { fontSize: 24, color: colors.white, ...textShadow },
+  dateText: {
+    fontSize: 24,
+    color: colors.white,
+    paddingHorizontal: padding,
+    ...textShadow,
   },
   gridContainer: {
     padding,
@@ -74,36 +60,70 @@ export default StyleSheet.create({
     borderColor: colors.black,
     borderWidth: 1,
   },
-  hourCellLeft: {
-    ...cellWithWhiteText,
-    flexBasis: "7%", // reduced flex basis to reduce width
-    fontSize: 18,
-    borderRadius: 8,
-    borderColor: "transparent",
-    borderWidth: 0,
-    marginLeft: -5,
+  dayColumn: {
+    ...styles.cell,
+    flexBasis: "5.5%",
+    margin: 4,
+    flexGrow: 1,
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    fontSize: 30,
+    color: colors.white,
+    borderColor: "black",
+  },
+  hourColumn: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    flexGrow: 1,
+    flex: 1,
+  },
+  leftbufferCell: {
+    ...styles.cell,
+    margin,
+    fontSize: 30,
   },
   lefthourCell: {
-    ...cellWithWhiteText,
-    flexBasis: "7%", // reduced flex basis to reduce width
+    ...styles.cell,
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 30,
+    color: colors.white,
+    textAlign: "center",
+    ...textShadow,
+  },
+  weekdaysCell: {
+    ...styles.cell,
     fontSize: 20,
+    color: colors.white,
+    textAlign: "center",
     ...textShadow,
   },
   hourCell: {
-    ...cellWithWhiteText,
-    fontSize: 18,
-    borderRadius: 8,
+    ...styles.cell,
     borderColor: colors.black,
     borderWidth: 1,
-    margin: 4,
-    aspectRatio: 1,
+    color: colors.white,
+    textAlign: "center",
+    borderRadius,
+  },
+  green: { backgroundColor: colors.green },
+  yellow: { backgroundColor: colors.yellow },
+  red: { backgroundColor: colors.red },
+  dayHourColumn: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+
+    flex: 1,
+    flexGrow: 1,
   },
   bufferCell: {
-    flexBasis: "7%", // reduced flex basis to reduce width
-    fontSize: 18,
-    borderRadius: 8,
-    borderColor: "transparent",
-    marginLeft: 4,
+    ...styles.cell,
+    margin,
+    fontSize: 30,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -113,29 +133,9 @@ export default StyleSheet.create({
   },
   button: { backgroundColor: colors.blue, padding, borderRadius },
   buttonTextStyle: {
-    justifyContent: "space-between",
     color: "white",
-    ...textShadow,
-  },
-  dayColumn: {
-    ...cellWithWhiteText,
-    flexBasis: "7%",
-    margin: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    aspectRatio: 1,
-    fontSize: "auto",
-  },
-  arrowButton: {
-    padding: 8,
-    borderRadius: 8,
-  },
-  arrowText: {
-    fontSize: 24,
-    color: colors.white,
-  },
-  dateText: {
-    fontSize: 24,
-    color: colors.white,
+    textShadowColor: "black",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
 });

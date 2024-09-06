@@ -55,16 +55,46 @@ const PlanningWidget = () => {
     );
   };
 
+  const renderHours = () => {
+    return weekdays.map((day, dayIndex) => (
+      <View key={dayIndex} style={styles.dayHourColumn}>
+        {Array(HOURS_IN_A_DAY)
+          .fill(0)
+          .map((_, hour) => {
+            const date = getDateFromDay(day);
+            const hasData = availability.find(
+              (item) => item.date === date && item.hour === hour
+            );
+            return (
+              <TouchableOpacity
+                key={`${dayIndex}-${hour}`}
+                style={[
+                  styles.hourCell,
+                  hasData
+                    ? hasData.included
+                      ? styles.green
+                      : styles.red
+                    : styles.emptyCell,
+                ]}
+              >
+                <Text style={styles.hourText}>{hour}</Text>
+              </TouchableOpacity>
+            );
+          })}
+      </View>
+    ));
+  };
+
   const renderGridContainer = () => {
     return (
-      <View style={styles.gridContainer}>
+      <View style={[styles.gridContainer, { flexDirection: "column" }]}>
         <View style={{ flexDirection: "row" }}>
-          <View style={styles.bufferCell}>
-            <Text></Text>
+          <View style={[styles.dayColumn, styles.bufferCell]}>
+            <Text>&#8203;&#8203;</Text>
           </View>
           {weekdays.map((day, index) => (
             <View key={index} style={styles.dayColumn}>
-              <Text style={styles.lefthourCell}>{day.substring(0, 3)}</Text>
+              <Text style={styles.weekdaysCell}>{day.substring(0, 3)}</Text>
             </View>
           ))}
         </View>
@@ -73,34 +103,23 @@ const PlanningWidget = () => {
           showsVerticalScrollIndicator={false}
           scroll
         >
-          {Array(HOURS_IN_A_DAY)
-            .fill(0)
-            .map((_, hourIndex) => {
-              return (
-                <View key={hourIndex} style={{ flexDirection: "row" }}>
-                  <View style={styles.hourCellLeft}>
-                    <Text style={styles.lefthourCell}>{hourIndex}</Text>
-                  </View>
-                  {weekdays.map((day, dayIndex) => {
-                    const date = getDateFromDay(day);
-                    const dayAvailability = availability.find(
-                      (availabilityItem) => availabilityItem.date === date
-                    );
-                    return (
-                      <View key={dayIndex} style={styles.hourCell}>
-                        {/* Add content for each cell here */}
-                      </View>
-                    );
-                  })}
-                </View>
-              );
-            })}
+          <View style={{ flexDirection: "row" }}>
+            <View style={styles.hourColumn}>
+              {Array(HOURS_IN_A_DAY)
+                .fill(0)
+                .map((_, hour) => (
+                  <Text key={hour} style={styles.lefthourCell}>
+                    {hour}
+                  </Text>
+                ))}
+            </View>
+            {renderHours()}
+          </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonTextStyle}>Complete Planning</Text>
           </TouchableOpacity>
-          {/* Add more buttons as needed */}
         </View>
       </View>
     );
