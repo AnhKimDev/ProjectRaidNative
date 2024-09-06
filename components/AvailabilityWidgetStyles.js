@@ -65,6 +65,7 @@ export default StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius,
     marginTop: 10,
+    ...textShadow,
   },
   gridContainer: {
     padding,
@@ -99,6 +100,7 @@ export default StyleSheet.create({
     margin,
     color: colors.white,
     textAlign: "center",
+    ...textShadow,
   },
   hourCell: {
     ...styles.cell,
