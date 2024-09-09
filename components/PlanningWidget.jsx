@@ -24,22 +24,35 @@ const PlanningWidget = () => {
   const [date, setDate] = useState(() => new Date(Date.now()));
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [selectedHoursState, setSelectedHoursState] = useState({});
   const [availability, setAvailability] = useState([]);
-  const [selectedHours, setSelectedHours] = useState({});
+
+  const getAvailabilityStatus = (date, hour) => {
+    const formattedDate = getDateFromDay(date);
+    const isSelected =
+      selectedHoursState[formattedDate] &&
+      selectedHoursState[formattedDate][hour.toString()];
+    const includedHour =
+      availability.find((item) => item.date === formattedDate) &&
+      availability
+        .find((item) => item.date === formattedDate)
+        .hours.includes(hour);
+    return isSelected
+      ? styles.yellow // Return yellow if the hour is selected
+      : includedHour
+        ? styles.green // Return green if the hour is included in the availability data
+        : styles.red; // Return red by default
+  };
 
   const handleHourPress = (day, hour) => {
     const formattedDate = getDateFromDay(day);
-    setSelectedHours((prevSelectedHours) => {
+    setSelectedHoursState((prevSelectedHours) => {
       const existingHours = { ...(prevSelectedHours[formattedDate] || {}) };
       if (existingHours[hour.toString()]) {
         delete existingHours[hour.toString()];
       } else {
         existingHours[hour.toString()] = true;
       }
-      console.log("Updated selectedHours:", {
-        ...prevSelectedHours,
-        [formattedDate]: existingHours,
-      });
       return { ...prevSelectedHours, [formattedDate]: existingHours };
     });
   };
@@ -69,13 +82,13 @@ const PlanningWidget = () => {
     setStartDate(newStartDate);
     setEndDate(newEndDate);
     const newSelectedHours = {};
-    Object.keys(selectedHours).forEach((date) => {
+    Object.keys(selectedHoursState).forEach((date) => {
       const dateObject = new Date(date);
       if (dateObject >= newStartDate && dateObject <= newEndDate) {
-        newSelectedHours[date] = selectedHours[date];
+        newSelectedHours[date] = selectedHoursState[date];
       }
     });
-    setSelectedHours(newSelectedHours);
+    setSelectedHoursState(newSelectedHours);
   };
 
   const handlePrevDate = () => {
@@ -86,21 +99,21 @@ const PlanningWidget = () => {
     setStartDate(newStartDate);
     setEndDate(newEndDate);
     const newSelectedHours = {};
-    Object.keys(selectedHours).forEach((date) => {
+    Object.keys(selectedHoursState).forEach((date) => {
       const dateObject = new Date(date);
       if (dateObject >= newStartDate && dateObject <= newEndDate) {
-        newSelectedHours[date] = selectedHours[date];
+        newSelectedHours[date] = selectedHoursState[date];
       }
     });
-    setSelectedHours(newSelectedHours);
+    setSelectedHoursState(newSelectedHours);
   };
 
   const handleUpdate = () => {
     console.log("handleUpdate called");
-    console.log("selectedHours:", selectedHours);
+    console.log("selectedHoursState:", selectedHoursState);
     const updatedSelectedHours = {};
-    Object.keys(selectedHours).forEach((date) => {
-      const selectedHoursForDate = selectedHours[date];
+    Object.keys(selectedHoursState).forEach((date) => {
+      const selectedHoursForDate = selectedHoursState[date];
       const newSelectedHoursForDate = {};
       Object.keys(selectedHoursForDate).forEach((hour) => {
         newSelectedHoursForDate[hour] = selectedHoursForDate[hour];
@@ -113,7 +126,7 @@ const PlanningWidget = () => {
       date,
       updatedSelectedHours
     ).then(() => {
-      setSelectedHours(updatedSelectedHours);
+      setSelectedHoursState(updatedSelectedHours);
     });
   };
 
@@ -144,27 +157,15 @@ const PlanningWidget = () => {
 
   const renderHours = () => {
     return weekdays.map((day, dayIndex) => {
-      const formattedDate = getDateFromDay(day); // Use the date string directly
       return (
         <View key={dayIndex} style={styles.dayHourColumn}>
           {Array(HOURS_IN_A_DAY)
             .fill(0)
             .map((_, hour) => {
-              const isSelected =
-                selectedHours[formattedDate] &&
-                selectedHours[formattedDate][hour.toString()];
-              const includedHour =
-                availability.find((item) => item.date === formattedDate) &&
-                availability
-                  .find((item) => item.date === formattedDate)
-                  .hours.includes(hour);
               return (
                 <TouchableOpacity
                   key={`${dayIndex}-${hour}`}
-                  style={[
-                    styles.hourCell,
-                    includedHour || isSelected ? styles.green : styles.red,
-                  ]}
+                  style={[styles.hourCell, getAvailabilityStatus(day, hour)]}
                   onPress={() => handleHourPress(day, hour)}
                 >
                   <Text style={styles.hourText}>{hour}</Text>
