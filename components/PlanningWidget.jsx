@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import styles from "./PlanningWidgetStyles";
-import { availability as availabilityData } from "./data";
 import AvailabilityApi from "./AvailabilityApi";
 
 const weekdays = [
@@ -34,6 +33,9 @@ const PlanningWidget = () => {
       selectedHoursState[formattedDate][hour.toString()];
     const includedHour =
       availability.find((item) => item.date === formattedDate) &&
+      Array.isArray(
+        availability.find((item) => item.date === formattedDate).hours
+      ) &&
       availability
         .find((item) => item.date === formattedDate)
         .hours.includes(hour);
@@ -75,7 +77,9 @@ const PlanningWidget = () => {
   };
 
   const handleNextDate = () => {
-    const newStartDate = new Date(endDate.getTime() + 1 * 24 * 60 * 60 * 1000);
+    const newStartDate = new Date(
+      startDate.getTime() + 7 * 24 * 60 * 60 * 1000
+    );
     const newEndDate = new Date(
       newStartDate.getTime() + 6 * 24 * 60 * 60 * 1000
     );
@@ -92,9 +96,11 @@ const PlanningWidget = () => {
   };
 
   const handlePrevDate = () => {
-    const newEndDate = new Date(startDate.getTime() - 1 * 24 * 60 * 60 * 1000);
     const newStartDate = new Date(
-      newEndDate.getTime() - 6 * 24 * 60 * 60 * 1000
+      startDate.getTime() - 7 * 24 * 60 * 60 * 1000
+    );
+    const newEndDate = new Date(
+      newStartDate.getTime() + 6 * 24 * 60 * 60 * 1000
     );
     setStartDate(newStartDate);
     setEndDate(newEndDate);
@@ -123,15 +129,23 @@ const PlanningWidget = () => {
     console.log("updatedSelectedHours:", updatedSelectedHours);
     AvailabilityApi.updateAvailability(
       user.userId,
-      date,
+      startDate,
+      endDate,
       updatedSelectedHours
     ).then(() => {
-      setSelectedHoursState(updatedSelectedHours);
+      // Reset the selected hours state
+      setSelectedHoursState({});
+      // Fetch the updated availability data
+      AvailabilityApi.getAvailability(user.userId, startDate, endDate).then(
+        (availability) => {
+          setAvailability(availability);
+        }
+      );
     });
   };
 
   const handleReset = () => {
-    setSelectedHours({});
+    setSelectedHoursState({});
   };
 
   const renderHeader = (date, handlePrevDate, handleNextDate) => {

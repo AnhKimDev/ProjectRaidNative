@@ -1,27 +1,74 @@
 import { users, availability } from "./data";
 
 const AvailabilityApi = {
-  async getAvailability(userId, startDate, endDate) {
-    console.log("Get availability called:", userId, startDate, endDate);
-    const startDateTime = new Date(startDate).getTime();
-    const endDateTime = new Date(endDate).getTime();
+  availabilityData: [...availability],
 
-    const availabilityResult = availability.filter((item) => {
-      const itemDate = new Date(item.date).getTime();
-      return (
-        item.userId === userId &&
-        itemDate >= startDateTime &&
-        itemDate <= endDateTime
-      );
-    });
-    console.log("Returned availability:", availabilityResult);
-    return availabilityResult;
+  async getAvailability(userId, startDate, endDate) {
+    console.log("Get availability called");
+    const startDateIso = startDate.toISOString().split("T")[0];
+    const endDateIso = endDate.toISOString().split("T")[0];
+
+    return this.availabilityData.filter(
+      ({ userId: id, date }) =>
+        id === userId && date >= startDateIso && date <= endDateIso
+    );
   },
 
-  async updateAvailability(userId, date, hours) {
-    // TO DO: implement update logic when you have a real backend API
-    console.log("Update availability called:", userId, date, hours);
-    return Promise.resolve(); // dummy implementation
+  async updateAvailability(userId, startDate, endDate, hours) {
+    console.log("Update availability called");
+    const startDateIso = startDate.toISOString().split("T")[0];
+    const endDateIso = endDate.toISOString().split("T")[0];
+
+    Object.keys(hours).forEach((dateIso) => {
+      const existingItem = this.availabilityData.find(
+        ({ date, userId: id }) => date === dateIso && id === userId
+      );
+
+      if (dateIso >= startDateIso && dateIso <= endDateIso) {
+        existingItem
+          ? this.compareAndSyncHours(existingItem, hours[dateIso])
+          : this.addAvailabilityItem(userId, dateIso, hours[dateIso]);
+      } else {
+        this.removeAvailabilityItem(userId, dateIso);
+      }
+    });
+
+    return Promise.resolve();
+  },
+
+  addAvailabilityItem(userId, dateIso, hours) {
+    console.log("Adding availability item for date:", dateIso);
+    const newHours = Object.keys(hours)
+      .filter((hour) => hours[hour])
+      .map(Number);
+    this.availabilityData.push({ userId, date: dateIso, hours: newHours });
+  },
+
+  removeAvailabilityItem(userId, dateIso) {
+    console.log("Removing availability item for date:", dateIso);
+    const index = this.availabilityData.findIndex(
+      ({ date, userId: id }) => date === dateIso && id === userId
+    );
+    if (index !== -1) {
+      this.availabilityData.splice(index, 1);
+    }
+  },
+
+  compareAndSyncHours(existingItem, hours) {
+    console.log("Updating availability item for date:", existingItem.date);
+    const newHours = existingItem.hours.slice();
+    Object.keys(hours).forEach((hour) => {
+      if (hours[hour]) {
+        if (!newHours.includes(parseInt(hour))) {
+          newHours.push(parseInt(hour));
+        } else {
+          newHours.splice(newHours.indexOf(parseInt(hour)), 1);
+        }
+      } else {
+        newHours.splice(newHours.indexOf(parseInt(hour)), 1);
+      }
+    });
+    existingItem.hours = [...new Set(newHours)];
   },
 };
 
