@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./PlanningWidgetStyles";
 import { availability as availabilityData } from "./data";
+import AvailabilityApi from "./AvailabilityApi";
 
 const weekdays = [
   "Monday",
@@ -28,14 +29,16 @@ const PlanningWidget = () => {
   const [selectedHours, setSelectedHours] = useState({});
 
   const handleHourPress = (day, hour) => {
+    console.log("before", selectedHours);
     const date = getDateFromDay(day);
-    const existingHours = selectedHours[date] || [];
-    if (existingHours.includes(hour)) {
-      existingHours.splice(existingHours.indexOf(hour), 1);
+    const existingHours = selectedHours[date] || {};
+    if (existingHours[hour]) {
+      delete existingHours[hour];
     } else {
-      existingHours.push(hour);
+      existingHours[hour] = true;
     }
     setSelectedHours({ ...selectedHours, [date]: existingHours });
+    console.log("after", selectedHours);
   };
 
   useEffect(() => {
@@ -43,18 +46,11 @@ const PlanningWidget = () => {
     const endDate = new Date(startDate.getTime() + 6 * 24 * 60 * 60 * 1000);
     setStartDate(startDate);
     setEndDate(endDate);
-    console.log("availabilitydata length:", availabilityData.length);
-    const filteredAvailability = availabilityData.filter((item) => {
-      const itemDate = new Date(item.date);
-      return (
-        item.userId === user.userId &&
-        itemDate &&
-        itemDate >= startDate &&
-        itemDate <= endDate
-      );
-    });
-    setAvailability(filteredAvailability);
-    console.log("filtered availability:", filteredAvailability);
+    AvailabilityApi.getAvailability(user.userId, startDate, endDate).then(
+      (filteredAvailability) => {
+        setAvailability(filteredAvailability);
+      }
+    );
   }, [date]);
 
   const getDateFromDay = (day) => {
@@ -66,17 +62,6 @@ const PlanningWidget = () => {
     return date.toISOString().split("T")[0];
   };
 
-  const handlePrevDate = () => {
-    const newStartDate = new Date(
-      startDate.getTime() - 7 * 24 * 60 * 60 * 1000
-    );
-    const newEndDate = new Date(
-      newStartDate.getTime() - 6 * 24 * 60 * 60 * 1000
-    );
-    setStartDate(newStartDate);
-    setEndDate(newEndDate);
-  };
-
   const handleNextDate = () => {
     const newStartDate = new Date(
       startDate.getTime() + 7 * 24 * 60 * 60 * 1000
@@ -86,6 +71,74 @@ const PlanningWidget = () => {
     );
     setStartDate(newStartDate);
     setEndDate(newEndDate);
+    const newSelectedHours = {};
+    Object.keys(selectedHours).forEach((date) => {
+      const dateObject = new Date(date);
+      if (dateObject >= newStartDate && dateObject <= newEndDate) {
+        newSelectedHours[date] = selectedHours[date];
+      }
+    });
+    setSelectedHours(newSelectedHours);
+    const filteredAvailability = availabilityData.filter((item) => {
+      const itemDate = new Date(item.date);
+      return (
+        item.userId === user.userId &&
+        itemDate &&
+        itemDate >= newStartDate &&
+        itemDate <= newEndDate
+      );
+    });
+    setAvailability(filteredAvailability);
+  };
+
+  const handlePrevDate = () => {
+    const newStartDate = new Date(
+      startDate.getTime() - 7 * 24 * 60 * 60 * 1000
+    );
+    const newEndDate = new Date(
+      newStartDate.getTime() + 6 * 24 * 60 * 60 * 1000
+    );
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+    const newSelectedHours = {};
+    Object.keys(selectedHours).forEach((date) => {
+      const dateObject = new Date(date);
+      if (dateObject >= newStartDate && dateObject <= newEndDate) {
+        newSelectedHours[date] = selectedHours[date];
+      }
+    });
+    setSelectedHours(newSelectedHours);
+    const filteredAvailability = availabilityData.filter((item) => {
+      const itemDate = new Date(item.date);
+      return (
+        item.userId === user.userId &&
+        itemDate &&
+        itemDate >= newStartDate &&
+        itemDate <= newEndDate
+      );
+    });
+    setAvailability(filteredAvailability);
+  };
+  const handleUpdate = () => {
+    console.log("handleUpdate called");
+    console.log("selectedHours:", selectedHours);
+    const updatedSelectedHours = { ...selectedHours };
+    Object.keys(selectedHours).forEach((date) => {
+      const selectedHoursForDate = selectedHours[date];
+      updatedSelectedHours[date] = { ...selectedHoursForDate };
+    });
+    console.log("updatedSelectedHours:", updatedSelectedHours);
+    AvailabilityApi.updateAvailability(
+      user.userId,
+      date,
+      updatedSelectedHours
+    ).then(() => {
+      setSelectedHours(updatedSelectedHours);
+    });
+  };
+
+  const handleReset = () => {
+    setSelectedHours({});
   };
 
   const renderHeader = (date, handlePrevDate, handleNextDate) => {
@@ -118,8 +171,7 @@ const PlanningWidget = () => {
             const date = getDateFromDay(day);
             const hasData = availability.find((item) => item.date === date);
             const includedHour = hasData && hasData.hours.includes(hour);
-            const isSelected =
-              selectedHours[date] && selectedHours[date].includes(hour);
+            const isSelected = selectedHours[date] && selectedHours[date][hour];
             return (
               <TouchableOpacity
                 key={`${dayIndex}-${hour}`}
@@ -173,8 +225,11 @@ const PlanningWidget = () => {
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonTextStyle}>Complete Planning</Text>
+          <TouchableOpacity style={styles.button} onPress={handleReset}>
+            <Text style={styles.buttonTextStyle}>Reset</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+            <Text style={styles.buttonTextStyle}>Update</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -188,5 +243,4 @@ const PlanningWidget = () => {
     </View>
   );
 };
-
 export default PlanningWidget;

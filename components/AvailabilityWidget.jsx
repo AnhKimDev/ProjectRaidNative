@@ -19,15 +19,11 @@ const AvailabilityWidget = () => {
 
   //update if date is changed
   useEffect(() => {
-    if (availabilityData.length > 0) {
-      const newAvailability = availabilityData.filter(
-        (item) => item.date === date.toISOString().split("T")[0]
-      );
-      setAvailability(newAvailability);
-    } else {
-      setAvailability([]);
-    }
-  }, [date]);
+    const newAvailability = availabilityData.filter(
+      (item) => item.date === date.toISOString().split("T")[0]
+    );
+    setAvailability(newAvailability.length > 0 ? newAvailability : []);
+  }, [date, availabilityData]);
 
   //handles arrow left
   const handlePrevDate = () => {
