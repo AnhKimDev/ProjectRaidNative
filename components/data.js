@@ -1,3 +1,20 @@
+export const groups = [
+  {
+    groupId: "group-1",
+    name: "Group 1",
+    userIds: [
+      "user-1",
+      "user-2",
+      "user-3",
+      "user-4",
+      "user-5",
+      "user-6",
+      "user-7",
+      "user-8",
+    ],
+  },
+];
+
 export const users = [
   {
     userId: "user-1",
@@ -161,5 +178,165 @@ export const availability = [
     date: "2024-09-06",
     userId: "user-8",
     hours: [17, 18, 19, 20, 21],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-1",
+    hours: [9, 10, 11, 12, 14, 15],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-2",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-3",
+    hours: [11, 12, 13, 14, 15, 16],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-4",
+    hours: [9, 10, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-5",
+    hours: [10, 11, 12, 13, 14, 16],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-6",
+    hours: [9, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-7",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-10",
+    userId: "user-8",
+    hours: [11, 12, 13, 14, 15, 16],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-1",
+    hours: [9, 10, 11, 12, 13, 14],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-2",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-3",
+    hours: [11, 12, 13, 14, 15, 16],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-4",
+    hours: [9, 10, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-5",
+    hours: [10, 11, 12, 13, 14, 16],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-6",
+    hours: [9, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-7",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-11",
+    userId: "user-8",
+    hours: [11, 12, 13, 14, 15, 16],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-1",
+    hours: [9, 10, 11, 12, 13, 14],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-2",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-3",
+    hours: [11, 12, 13, 14, 15, 16],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-4",
+    hours: [9, 10, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-5",
+    hours: [10, 11, 12, 13, 14, 16],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-6",
+    hours: [9, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-7",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-12",
+    userId: "user-8",
+    hours: [11, 12, 13, 14, 15, 16],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-1",
+    hours: [9, 10, 11, 12, 13, 14],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-2",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-3",
+    hours: [11, 12, 13, 14, 15, 16],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-4",
+    hours: [9, 10, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-5",
+    hours: [10, 11, 12, 13, 14, 16],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-6",
+    hours: [9, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-7",
+    hours: [10, 11, 12, 13, 14, 15],
+  },
+  {
+    date: "2024-09-13",
+    userId: "user-8",
+    hours: [11, 12, 13, 14, 15, 16],
   },
 ];

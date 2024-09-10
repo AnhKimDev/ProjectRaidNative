@@ -9,21 +9,70 @@ import {
 } from "react-native";
 import styles from "./AvailabilityWidgetStyles";
 import { Ionicons } from "@expo/vector-icons";
-import { users, availability as availabilityData } from "./data";
+import AvailabilityApi from "./AvailabilityApi";
 
 const HOURS_IN_A_DAY = 24;
+const groupId = "group-1";
+const users = [
+  {
+    userId: "user-1",
+    name: "User 1",
+    image: "",
+  },
+  {
+    userId: "user-2",
+    name: "User 2",
+    image: "",
+  },
+  {
+    userId: "user-3",
+    name: "User 3",
+    image: "",
+  },
+  {
+    userId: "user-4",
+    name: "User 4",
+    image: "",
+  },
+  {
+    userId: "user-5",
+    name: "User 5",
+    image: "",
+  },
+  {
+    userId: "user-6",
+    name: "User 6",
+    image: "",
+  },
+  {
+    userId: "user-7",
+    name: "User 7",
+    image: "",
+  },
+  {
+    userId: "user-8",
+    name: "User 8",
+    image: "",
+  },
+];
 
 const AvailabilityWidget = () => {
   const [date, setDate] = useState(() => new Date(Date.now()));
   const [availability, setAvailability] = useState([]);
+  const [highlightedHours, setHighlightedHours] = useState({});
 
   //update if date is changed
   useEffect(() => {
-    const newAvailability = availabilityData.filter(
-      (item) => item.date === date.toISOString().split("T")[0]
-    );
-    setAvailability(newAvailability.length > 0 ? newAvailability : []);
-  }, [date, availabilityData]);
+    const fetchAvailability = async () => {
+      const groupId = "group-1";
+      const availability = await AvailabilityApi.getAvailabilityByGroup(
+        groupId,
+        date
+      );
+      setAvailability(availability);
+    };
+    fetchAvailability();
+  }, [date]);
 
   //handles arrow left
   const handlePrevDate = () => {
@@ -35,29 +84,36 @@ const AvailabilityWidget = () => {
     setDate(new Date(date.setDate(date.getDate() + 1)));
   };
 
-  //handles onclick on cells
-  const handleAvailabilityChange = (userIndex, hour) => {
-    const newAvailability = [...availability];
-    const userHours = newAvailability[userIndex].hours;
-    const hourIndex = userHours.indexOf(hour);
-    const newHours =
-      hourIndex !== -1
-        ? userHours.filter((h) => h !== hour)
-        : [...userHours, hour];
-    newAvailability[userIndex].hours = newHours;
-    setAvailability(newAvailability);
+  //TODO: handles setavaialbility button
+  const handleSetAvailability = () => {
+    availability.forEach((user) => {
+      const userId = user.userId;
+      const startDate = new Date(date);
+      const endDate = new Date(startDate);
+      const highlightedHoursArray = Object.keys(highlightedHours).filter(
+        (hour) => highlightedHours[hour]
+      );
+      const hoursObject = {
+        [startDate.toISOString().split("T")[0]]: highlightedHoursArray.reduce(
+          (acc, hour) => ({ ...acc, [hour]: true }),
+          {}
+        ),
+      };
+      AvailabilityApi.updateAvailability(
+        userId,
+        startDate,
+        endDate,
+        hoursObject
+      ).then(() => {
+        resetHighlightedHours();
+        setDate(new Date(date)); // or setDate(date) if you don't need a new Date object
+      });
+    });
   };
 
-  // Memoized function to calculate highlighted hours
-  const highlightedHours = useMemo(() => {
-    const hours = [];
-    for (let hour = 0; hour < HOURS_IN_A_DAY; hour++) {
-      if (availability.every((user) => user.hours.includes(hour))) {
-        hours.push(hour);
-      }
-    }
-    return hours;
-  });
+  const resetHighlightedHours = () => {
+    setHighlightedHours({});
+  };
 
   // Extracted variables for better readability
   const startTime = useMemo(() => {
@@ -68,48 +124,82 @@ const AvailabilityWidget = () => {
     return highlightedHours.length ? Math.max(...highlightedHours) : "";
   }, [highlightedHours]);
 
+  const getAvailabilityStatus = (user, hour) => {
+    const userAvailability = availability.find(
+      (avail) => avail.userId === user.userId
+    );
+    const isAvailable =
+      userAvailability && userAvailability.hours.includes(hour);
+
+    const isHighlighted =
+      highlightedHours[user.userId] &&
+      highlightedHours[user.userId][date.toISOString()] &&
+      highlightedHours[user.userId][date.toISOString()].hours.includes(hour);
+
+    if (isHighlighted) {
+      console.log(isHighlighted, user, hour);
+      return styles.yellow; // Return yellow if the hour is highlighted
+    } else if (isAvailable) {
+      return styles.green; // Return green if the hour is available
+    } else {
+      return styles.red; // Return red by default
+    }
+  };
+
+  const handleHourPress = (date, hour, userId) => {
+    const isoDate = date.toISOString();
+
+    setHighlightedHours((prevHighlightedHours) => {
+      const newHighlightedHours = JSON.parse(
+        JSON.stringify(prevHighlightedHours)
+      );
+
+      if (!newHighlightedHours[userId]) {
+        newHighlightedHours[userId] = {};
+      }
+
+      let userDateEntry = newHighlightedHours[userId][isoDate];
+      if (!userDateEntry) {
+        userDateEntry = { hours: [] };
+        newHighlightedHours[userId][isoDate] = userDateEntry;
+      }
+
+      const hourIndex = userDateEntry.hours.indexOf(hour);
+
+      if (hourIndex === -1) {
+        userDateEntry.hours.push(hour);
+      } else {
+        userDateEntry.hours = userDateEntry.hours.filter((h) => h !== hour);
+      }
+
+      return newHighlightedHours;
+    });
+
+    console.log(`Hour ${hour} selected for user ${userId} on date ${isoDate}`);
+    console.log("Updated highlighted hours:", highlightedHours);
+  };
+
+  const handleReset = () => {
+    setHighlightedHours({});
+  };
+
   //renders how the cells are displayed
   const renderHours = () => {
-    if (availability.length === 0) {
-      // If no data is found, render all hours as empty
-      return users.map((user, userIndex) => (
-        <View key={user.userId} style={styles.hourColumn}>
-          {Array(HOURS_IN_A_DAY)
-            .fill(0)
-            .map((_, hour) => (
-              <TouchableOpacity
-                key={`${userIndex}-${hour}`}
-                style={styles.hourCell}
-              >
-                <Text style={styles.hourText}>{""}</Text>
-              </TouchableOpacity>
-            ))}
-        </View>
-      ));
-    } else {
-      // If data is found, render hours as usual
-      return availability.map((user, userIndex) => (
-        <View key={user.userId} style={styles.hourColumn}>
-          {Array(HOURS_IN_A_DAY)
-            .fill(0)
-            .map((_, hour) => {
-              return (
-                <TouchableOpacity
-                  key={`${userIndex}-${hour}`}
-                  style={[
-                    styles.hourCell,
-                    user.hours.includes(hour) ? styles.yellow : styles.red,
-                    highlightedHours.includes(hour) ? styles.highlighted : null,
-                  ]}
-                  onPress={() => handleAvailabilityChange(userIndex, hour)}
-                >
-                  <Text style={styles.hourText}>{hour}</Text>
-                </TouchableOpacity>
-              );
-            })}
-        </View>
-      ));
-    }
+    return users.map((user, userIndex) => (
+      <View key={user.userId} style={styles.hourColumn}>
+        {Array(HOURS_IN_A_DAY)
+          .fill(0)
+          .map((hour, index) => (
+            <TouchableOpacity
+              key={`${userIndex}-${index}`}
+              style={[styles.hourCell, getAvailabilityStatus(user, index)]}
+              onPress={() => handleHourPress(date, index, user.userId)} // Pass date, hour, and userId
+            >
+              <Text style={styles.hourText}>{index}</Text>
+            </TouchableOpacity>
+          ))}
+      </View>
+    ));
   };
 
   //renders the Header with date
@@ -136,8 +226,30 @@ const AvailabilityWidget = () => {
     );
   };
 
+  const calculateSummary = () => {
+    const timeslots = [];
+
+    for (let hour = 0; hour < 24; hour++) {
+      const allUsersAvailable = users.every((user) => {
+        const availabilityStatus = getAvailabilityStatus(user, hour);
+        return availabilityStatus !== styles.red;
+      });
+
+      if (allUsersAvailable) {
+        timeslots.push(hour);
+      }
+    }
+
+    const startTime = timeslots.length ? Math.min(...timeslots) : "";
+    const endTime = timeslots.length ? Math.max(...timeslots) : "";
+    const timeslotsString = timeslots.join(", ");
+
+    return { startTime, endTime, timeslots: timeslotsString };
+  };
   //renders the summary with startingtime and available timeslots
   const renderSummary = () => {
+    const { startTime, endTime, timeslots } = calculateSummary();
+
     return (
       <View style={styles.summaryContainer}>
         {availability.length > 0 ? (
@@ -149,7 +261,7 @@ const AvailabilityWidget = () => {
             />
             <TextInput
               style={styles.textInput}
-              value={`Available Timeslots: ${highlightedHours.join(", ")}`}
+              value={`Available Timeslots: ${timeslots}`}
               editable={false}
             />
           </>
@@ -213,7 +325,13 @@ const AvailabilityWidget = () => {
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleReset}>
+            <Text style={styles.buttonTextStyle}>Reset</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSetAvailability}
+          >
             <Text style={styles.buttonTextStyle}>Set Availability</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>

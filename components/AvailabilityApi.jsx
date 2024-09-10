@@ -1,4 +1,4 @@
-import { users, availability } from "./data";
+import { users, availability, groups } from "./data";
 
 const AvailabilityApi = {
   availabilityData: [...availability],
@@ -11,6 +11,21 @@ const AvailabilityApi = {
     return this.availabilityData.filter(
       ({ userId: id, date }) =>
         id === userId && date >= startDateIso && date <= endDateIso
+    );
+  },
+
+  async getAvailabilityByGroup(groupID, date) {
+    console.log("Get availability by group called", groupID, date);
+    const startDateIso = date.toISOString().split("T")[0];
+    const group = groups.find((group) => group.groupId === groupID.toString());
+    if (!group) {
+      throw new Error(`Group not found: ${groupId}`);
+    }
+    const userIds = group.userIds;
+
+    return this.availabilityData.filter(
+      ({ userId: id, date: availabilityDate }) =>
+        userIds.includes(id) && availabilityDate === startDateIso
     );
   },
 

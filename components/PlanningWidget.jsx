@@ -149,13 +149,16 @@ const PlanningWidget = () => {
   };
 
   const renderHeader = (date, handlePrevDate, handleNextDate) => {
+    const startDayOfWeek =
+      startDate.getDate() -
+      startDate.getDay() +
+      (startDate.getDay() === 0 ? 7 : 1);
     const startMonth = startDate.toLocaleString("default", { month: "short" });
-    const startDay = startDate.getDate();
     const startYear = startDate.getFullYear();
     const endMonth = endDate.toLocaleString("default", { month: "short" });
     const endDay = endDate.getDate();
     const endYear = endDate.getFullYear();
-    const weekRange = `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
+    const weekRange = `${startMonth} ${startDayOfWeek}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
     return (
       <View style={styles.header}>
         <TouchableOpacity style={styles.arrowButton} onPress={handlePrevDate}>
