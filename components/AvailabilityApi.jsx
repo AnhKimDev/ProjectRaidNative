@@ -4,7 +4,7 @@ const AvailabilityApi = {
   availabilityData: [...availability],
 
   async getAvailability(userId, startDate, endDate) {
-    console.log("Get availability called");
+    console.log("Get availability called", userId, startDate, endDate);
     const startDateIso = startDate.toISOString().split("T")[0];
     const endDateIso = endDate.toISOString().split("T")[0];
 
@@ -30,7 +30,13 @@ const AvailabilityApi = {
   },
 
   async updateAvailability(userId, startDate, endDate, hours) {
-    console.log("Update availability called");
+    console.log(
+      "Update availability called",
+      userId,
+      startDate,
+      endDate,
+      hours
+    );
     const startDateIso = startDate.toISOString().split("T")[0];
     const endDateIso = endDate.toISOString().split("T")[0];
 
