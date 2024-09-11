@@ -55,6 +55,21 @@ const users = [
     image: "",
   },
 ];
+const getyyyymmdd = (date) => {
+  if (!(date instanceof Date)) {
+    throw new Error(`Invalid date object: ${date}`);
+  }
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date: ${date}`);
+  }
+  return (
+    date.getFullYear() +
+    "-" +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + date.getDate()).slice(-2)
+  );
+};
 
 const AvailabilityWidget = () => {
   const [date, setDate] = useState(() => new Date(Date.now()));
@@ -86,58 +101,55 @@ const AvailabilityWidget = () => {
 
   //TODO: handles setavaialbility button
   const handleSetAvailability = () => {
-    availability.forEach((user) => {
-      const userId = user.userId;
+    const usersWithHighlightedHours = Object.keys(highlightedHours);
+
+    usersWithHighlightedHours.forEach((userId) => {
       const startDate = new Date(date);
       const endDate = new Date(startDate);
-      const highlightedHoursArray = Object.keys(highlightedHours).filter(
-        (hour) => highlightedHours[hour]
-      );
-      const hoursObject = {
-        [startDate.toISOString().split("T")[0]]: highlightedHoursArray.reduce(
+      const hoursObject = {};
+
+      highlightedHours[userId].forEach((entry) => {
+        const dateIso = entry.date;
+        const hours = entry.hours.reduce(
           (acc, hour) => ({ ...acc, [hour]: true }),
           {}
-        ),
-      };
+        );
+
+        hoursObject[dateIso] = hours;
+      });
+
       AvailabilityApi.updateAvailability(
         userId,
         startDate,
         endDate,
         hoursObject
       ).then(() => {
-        resetHighlightedHours();
-        setDate(new Date(date)); // or setDate(date) if you don't need a new Date object
+        handleReset();
+        //setDate(new Date(date)); // or setDate(date) if you don't need a new Date object
       });
     });
   };
 
-  const resetHighlightedHours = () => {
-    setHighlightedHours({});
-  };
-
-  // Extracted variables for better readability
-  const startTime = useMemo(() => {
-    return highlightedHours.length ? Math.min(...highlightedHours) : "";
-  }, [highlightedHours]);
-
-  const endTime = useMemo(() => {
-    return highlightedHours.length ? Math.max(...highlightedHours) : "";
-  }, [highlightedHours]);
-
-  const getAvailabilityStatus = (user, hour) => {
+  const getAvailabilityStatus = (hour, user) => {
     const userAvailability = availability.find(
       (avail) => avail.userId === user.userId
     );
-    const isAvailable =
-      userAvailability && userAvailability.hours.includes(hour);
 
+    let isAvailable = false;
+    if (userAvailability) {
+      isAvailable = userAvailability.hours.includes(hour);
+    }
+
+    const convertedDate = getyyyymmdd(date);
+
+    const userHighlightedHours = highlightedHours?.[user.userId];
     const isHighlighted =
-      highlightedHours[user.userId] &&
-      highlightedHours[user.userId][date.toISOString()] &&
-      highlightedHours[user.userId][date.toISOString()].hours.includes(hour);
+      userHighlightedHours &&
+      userHighlightedHours.some(
+        (entry) => entry.date === convertedDate && entry.hours.includes(hour)
+      );
 
     if (isHighlighted) {
-      console.log(isHighlighted, user, hour);
       return styles.yellow; // Return yellow if the hour is highlighted
     } else if (isAvailable) {
       return styles.green; // Return green if the hour is available
@@ -147,25 +159,25 @@ const AvailabilityWidget = () => {
   };
 
   const handleHourPress = (date, hour, userId) => {
-    const isoDate = date.toISOString();
+    const convertedDate = getyyyymmdd(date);
 
     setHighlightedHours((prevHighlightedHours) => {
-      const newHighlightedHours = JSON.parse(
-        JSON.stringify(prevHighlightedHours)
-      );
+      const newHighlightedHours = { ...prevHighlightedHours };
 
       if (!newHighlightedHours[userId]) {
-        newHighlightedHours[userId] = {};
+        newHighlightedHours[userId] = [];
       }
 
-      let userDateEntry = newHighlightedHours[userId][isoDate];
-      if (!userDateEntry) {
-        userDateEntry = { hours: [] };
-        newHighlightedHours[userId][isoDate] = userDateEntry;
+      let userDateEntryIndex = newHighlightedHours[userId].findIndex(
+        (entry) => entry.date === convertedDate
+      );
+      if (userDateEntryIndex === -1) {
+        newHighlightedHours[userId].push({ date: convertedDate, hours: [] });
+        userDateEntryIndex = newHighlightedHours[userId].length - 1;
       }
 
+      const userDateEntry = newHighlightedHours[userId][userDateEntryIndex];
       const hourIndex = userDateEntry.hours.indexOf(hour);
-
       if (hourIndex === -1) {
         userDateEntry.hours.push(hour);
       } else {
@@ -175,12 +187,17 @@ const AvailabilityWidget = () => {
       return newHighlightedHours;
     });
 
-    console.log(`Hour ${hour} selected for user ${userId} on date ${isoDate}`);
-    console.log("Updated highlighted hours:", highlightedHours);
+    console.log(
+      `Hour ${hour} selected for user ${userId} on date ${convertedDate}`
+    );
+    //console.log("Updated highlighted hours:", highlightedHours);
   };
 
   const handleReset = () => {
+    //console.log("before reset", highlightedHours);
+    //console.log("availability", availability);
     setHighlightedHours({});
+    //console.log("after reset", highlightedHours);
   };
 
   //renders how the cells are displayed
@@ -192,7 +209,7 @@ const AvailabilityWidget = () => {
           .map((hour, index) => (
             <TouchableOpacity
               key={`${userIndex}-${index}`}
-              style={[styles.hourCell, getAvailabilityStatus(user, index)]}
+              style={[styles.hourCell, getAvailabilityStatus(index, user)]}
               onPress={() => handleHourPress(date, index, user.userId)} // Pass date, hour, and userId
             >
               <Text style={styles.hourText}>{index}</Text>
@@ -230,12 +247,12 @@ const AvailabilityWidget = () => {
     const timeslots = [];
 
     for (let hour = 0; hour < 24; hour++) {
-      const allUsersAvailable = users.every((user) => {
-        const availabilityStatus = getAvailabilityStatus(user, hour);
-        return availabilityStatus !== styles.red;
+      const isHourAvailable = users.every((user) => {
+        const availabilityStatus = getAvailabilityStatus(hour, user);
+        return availabilityStatus.backgroundColor !== "#E74C3C";
       });
 
-      if (allUsersAvailable) {
+      if (isHourAvailable) {
         timeslots.push(hour);
       }
     }
