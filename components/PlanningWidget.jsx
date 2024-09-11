@@ -26,6 +26,14 @@ const PlanningWidget = () => {
   const [selectedHoursState, setSelectedHoursState] = useState({});
   const [availability, setAvailability] = useState([]);
 
+  //on startup update header
+  useEffect(() => {
+    const monday = getDateFromDay("Monday");
+    const sunday = getDateFromDay("Sunday");
+    setStartDate(new Date(monday));
+    setEndDate(new Date(sunday));
+  }, []); // empty dependency array to run only on mount
+
   const getAvailabilityStatus = (date, hour) => {
     const formattedDate = getDateFromDay(date);
     const isSelected =
@@ -240,6 +248,7 @@ const PlanningWidget = () => {
   return (
     <View style={styles.mainContainer}>
       {renderHeader(date, handlePrevDate, handleNextDate)}
+      <View style={{ height: 20 }} />
       {renderGridContainer()}
     </View>
   );
