@@ -3,8 +3,8 @@ import { users, availability, groups } from "./data";
 const AvailabilityApi = {
   availabilityData: [...availability],
 
-  async getAvailability(userId, startDate, endDate) {
-    console.log("Get availability called", userId, startDate, endDate);
+  async getAvailabilityByUser(userId, startDate, endDate) {
+    console.log("Get availabilityByUser called", userId, startDate, endDate);
     const startDateIso = startDate.toISOString().split("T")[0];
     const endDateIso = endDate.toISOString().split("T")[0];
 
@@ -29,9 +29,9 @@ const AvailabilityApi = {
     );
   },
 
-  async updateAvailability(userId, startDate, endDate, hours) {
+  async updateAvailabilityByUser(userId, startDate, endDate, hours) {
     console.log(
-      "Update availability called",
+      "UpdateAvailabilityByUser called",
       userId,
       startDate,
       endDate,
@@ -73,7 +73,9 @@ const AvailabilityApi = {
 
     Object.keys(usersAvailability).forEach((userId) => {
       const hours = usersAvailability[userId];
-      this.updateAvailability(userId, startDate, endDate, { [dateIso]: hours });
+      this.updateAvailabilityByUser(userId, startDate, endDate, {
+        [dateIso]: hours,
+      });
     });
 
     return Promise.resolve();

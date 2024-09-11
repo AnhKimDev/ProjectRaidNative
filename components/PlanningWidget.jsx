@@ -68,7 +68,7 @@ const PlanningWidget = () => {
   };
 
   useEffect(() => {
-    AvailabilityApi.getAvailability(user.userId, startDate, endDate).then(
+    AvailabilityApi.getAvailabilityByUser(user.userId, startDate, endDate).then(
       (availability) => {
         setAvailability(availability);
       }
@@ -135,7 +135,7 @@ const PlanningWidget = () => {
       updatedSelectedHours[date] = newSelectedHoursForDate;
     });
     console.log("updatedSelectedHours:", updatedSelectedHours);
-    AvailabilityApi.updateAvailability(
+    AvailabilityApi.updateAvailabilityByUser(
       user.userId,
       startDate,
       endDate,
@@ -144,11 +144,13 @@ const PlanningWidget = () => {
       // Reset the selected hours state
       setSelectedHoursState({});
       // Fetch the updated availability data
-      AvailabilityApi.getAvailability(user.userId, startDate, endDate).then(
-        (availability) => {
-          setAvailability(availability);
-        }
-      );
+      AvailabilityApi.getAvailabilityByUser(
+        user.userId,
+        startDate,
+        endDate
+      ).then((availability) => {
+        setAvailability(availability);
+      });
     });
   };
 
@@ -235,10 +237,10 @@ const PlanningWidget = () => {
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleReset}>
-            <Text style={styles.buttonTextStyle}>Reset</Text>
+            <Text style={styles.buttonTextStyle}>Reset Selection</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-            <Text style={styles.buttonTextStyle}>Update</Text>
+            <Text style={styles.buttonTextStyle}>Confirm Selection</Text>
           </TouchableOpacity>
         </View>
       </View>

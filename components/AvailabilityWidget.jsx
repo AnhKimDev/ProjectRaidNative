@@ -349,13 +349,13 @@ const AvailabilityWidget = () => {
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleReset}>
-            <Text style={styles.buttonTextStyle}>Reset</Text>
+            <Text style={styles.buttonTextStyle}>Reset Selection</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
             onPress={handleSetAvailability}
           >
-            <Text style={styles.buttonTextStyle}>Set Availability</Text>
+            <Text style={styles.buttonTextStyle}>Confirm Selection</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonTextStyle}>Suggest Raid</Text>
