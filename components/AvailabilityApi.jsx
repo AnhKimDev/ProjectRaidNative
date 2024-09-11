@@ -57,6 +57,28 @@ const AvailabilityApi = {
     return Promise.resolve();
   },
 
+  async updateAvailabilityByGroup(
+    dateIso,
+    startDate,
+    endDate,
+    usersAvailability
+  ) {
+    console.log(
+      "Update availability by group called",
+      dateIso,
+      startDate,
+      endDate,
+      usersAvailability
+    );
+
+    Object.keys(usersAvailability).forEach((userId) => {
+      const hours = usersAvailability[userId];
+      this.updateAvailability(userId, startDate, endDate, { [dateIso]: hours });
+    });
+
+    return Promise.resolve();
+  },
+
   addAvailabilityItem(userId, dateIso, hours) {
     console.log("Adding availability item for date:", dateIso);
     const newHours = Object.keys(hours)

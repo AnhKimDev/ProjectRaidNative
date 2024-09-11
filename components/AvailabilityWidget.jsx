@@ -101,13 +101,9 @@ const AvailabilityWidget = () => {
 
   //TODO: handles setavaialbility button
   const handleSetAvailability = () => {
-    const usersWithHighlightedHours = Object.keys(highlightedHours);
+    const availabilityByDate = {};
 
-    usersWithHighlightedHours.forEach((userId) => {
-      const startDate = new Date(date);
-      const endDate = new Date(startDate);
-      const hoursObject = {};
-
+    Object.keys(highlightedHours).forEach((userId) => {
       highlightedHours[userId].forEach((entry) => {
         const dateIso = entry.date;
         const hours = entry.hours.reduce(
@@ -115,14 +111,24 @@ const AvailabilityWidget = () => {
           {}
         );
 
-        hoursObject[dateIso] = hours;
-      });
+        if (!availabilityByDate[dateIso]) {
+          availabilityByDate[dateIso] = {};
+        }
 
-      AvailabilityApi.updateAvailability(
-        userId,
+        availabilityByDate[dateIso][userId] = hours;
+      });
+    });
+
+    Object.keys(availabilityByDate).forEach((dateIso) => {
+      const startDate = new Date(dateIso);
+      const endDate = new Date(startDate);
+      const usersAvailability = availabilityByDate[dateIso];
+
+      AvailabilityApi.updateAvailabilityByGroup(
+        dateIso,
         startDate,
         endDate,
-        hoursObject
+        usersAvailability
       ).then(() => {
         handleReset();
         //setDate(new Date(date)); // or setDate(date) if you don't need a new Date object
