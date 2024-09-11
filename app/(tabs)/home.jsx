@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import UserWidget from "../../components/UserWidget";
 
 const Home = () => {
   return (
-    <View style={{ flex: 1, backgroundColor: "#191970" }}>
-      <Text>Home</Text>
+    <View style={{ flex: 1 }}>
+      <UserWidget />
     </View>
   );
 };

@@ -13,6 +13,20 @@ export const groups = [
       "user-8",
     ],
   },
+  {
+    groupId: "group-2",
+    name: "Group 2",
+    userIds: [
+      "user-9",
+      "user-10",
+      "user-11",
+      "user-12",
+      "user-13",
+      "user-14",
+      "user-15",
+      "user-16",
+    ],
+  },
 ];
 
 export const users = [
@@ -54,6 +68,46 @@ export const users = [
   {
     userId: "user-8",
     name: "User 8",
+    image: "",
+  },
+  {
+    userId: "user-9",
+    name: "User 9",
+    image: "",
+  },
+  {
+    userId: "user-10",
+    name: "User 10",
+    image: "",
+  },
+  {
+    userId: "user-11",
+    name: "User 11",
+    image: "",
+  },
+  {
+    userId: "user-12",
+    name: "User 12",
+    image: "",
+  },
+  {
+    userId: "user-13",
+    name: "User 13",
+    image: "",
+  },
+  {
+    userId: "user-14",
+    name: "User 14",
+    image: "",
+  },
+  {
+    userId: "user-15",
+    name: "User 15",
+    image: "",
+  },
+  {
+    userId: "user-16",
+    name: "User 16",
     image: "",
   },
 ];
