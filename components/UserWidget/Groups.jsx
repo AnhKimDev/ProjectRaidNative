@@ -2,7 +2,7 @@
 import React from "react";
 import { View, Text, Image, ScrollView } from "react-native";
 import styles from "./GroupsStyles";
-import { groups, users } from "./data";
+import { groups, users } from "../data";
 
 const getRandomImageId = () => Math.floor(Math.random() * 1084);
 

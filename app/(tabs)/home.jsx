@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import UserWidget from "../../components/UserWidget";
+
+import UserWidget from "../../components/UserWidget/UserWidget";
 
 const Home = () => {
   return (
