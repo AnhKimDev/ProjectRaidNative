@@ -9,7 +9,7 @@ const UserInfo = () => {
     <View style={styles.userInfoContainer}>
       <Text style={styles.welcomeText}>Welcome back, {username}!</Text>
       <Image
-        source={{ uri: "https://picsum.photos/150/150" }}
+        source={{ uri: "https://picsum.photos/150/150?image=1" }}
         style={styles.profilePicture}
       />
     </View>
