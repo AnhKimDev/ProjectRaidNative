@@ -9,10 +9,12 @@ import {
 } from "react-native";
 import styles from "./AvailabilityWidgetStyles";
 import { Ionicons } from "@expo/vector-icons";
-import AvailabilityApi from "./AvailabilityApi";
+import AvailabilityApi from "./../AvailabilityApi";
+import Header from "./Header";
+import Summary from "./Summary";
+//import { users } from "./../data";
 
 const HOURS_IN_A_DAY = 24;
-const groupId = "group-1";
 const users = [
   {
     userId: "user-1",
@@ -225,30 +227,6 @@ const AvailabilityWidget = () => {
     ));
   };
 
-  //renders the Header with date
-  const renderHeader = () => {
-    const startDate = date;
-    const startDayOfWeek = startDate.toLocaleString("default", {
-      weekday: "long",
-    });
-    const startMonth = startDate.toLocaleString("default", { month: "short" });
-    const startDay = startDate.getDate();
-    const startYear = startDate.getFullYear();
-    const weekRange = `${startDayOfWeek}, ${startMonth} ${startDay}, ${startYear}`;
-
-    return (
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.arrowButton} onPress={handlePrevDate}>
-          <Text style={styles.arrowText}>‹</Text>
-        </TouchableOpacity>
-        <Text style={styles.dateText}>{weekRange}</Text>
-        <TouchableOpacity style={styles.arrowButton} onPress={handleNextDate}>
-          <Text style={styles.arrowText}>›</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   const calculateSummary = () => {
     const timeslots = [];
 
@@ -266,35 +244,29 @@ const AvailabilityWidget = () => {
     const startTime = timeslots.length ? Math.min(...timeslots) : "";
     const endTime = timeslots.length ? Math.max(...timeslots) : "";
     const timeslotsString = timeslots.join(", ");
-
     return { startTime, endTime, timeslots: timeslotsString };
   };
-  //renders the summary with startingtime and available timeslots
-  const renderSummary = () => {
-    const { startTime, endTime, timeslots } = calculateSummary();
 
-    return (
-      <View style={styles.summaryContainer}>
-        {availability.length > 0 ? (
-          <>
-            <TextInput
-              style={styles.textInput}
-              value={`Starting Time: ${startTime} - End Time: ${endTime}`}
-              editable={false}
-            />
-            <TextInput
-              style={styles.textInput}
-              value={`Available Timeslots: ${timeslots}`}
-              editable={false}
-            />
-          </>
-        ) : (
-          <Text style={styles.textInput}>
-            No availability data found for this date.
-          </Text>
-        )}
-      </View>
-    );
+  const renderUser = (availabilityItem, userIndex) => {
+    const user = users.find((user) => user.userId === availabilityItem.userId);
+    if (user) {
+      return (
+        <View key={availabilityItem.userId} style={styles.userName}>
+          {/* <Text style={styles.userName}>{user.name}</Text> */}
+          <Image
+            source={user.image ? { uri: user.image } : null}
+            style={styles.image}
+          />
+          {!user.image && (
+            <View style={styles.userImagePlaceholder}>
+              <Ionicons name="person" size={20} color="#ccc" />
+            </View>
+          )}
+        </View>
+      );
+    } else {
+      return null;
+    }
   };
 
   //renders users, hours and buttons
@@ -305,29 +277,9 @@ const AvailabilityWidget = () => {
           <View style={[styles.userName, styles.leftbufferCell]}>
             <Text>&#8203;&#8203;</Text>
           </View>
-          {availability.map((availabilityItem, userIndex) => {
-            const user = users.find(
-              (user) => user.userId === availabilityItem.userId
-            );
-            if (user) {
-              return (
-                <View key={availabilityItem.userId} style={styles.userName}>
-                  {/* <Text style={styles.userName}>{user.name}</Text> */}
-                  <Image
-                    source={user.image ? { uri: user.image } : null}
-                    style={styles.image}
-                  />
-                  {!user.image && (
-                    <View style={styles.userImagePlaceholder}>
-                      <Ionicons name="person" size={20} color="#ccc" />
-                    </View>
-                  )}
-                </View>
-              );
-            } else {
-              return null;
-            }
-          })}
+          {availability.map((availabilityItem, userIndex) =>
+            renderUser(availabilityItem, userIndex)
+          )}
         </View>
         <ScrollView
           showsHorizontalScrollIndicator={false}
@@ -335,40 +287,56 @@ const AvailabilityWidget = () => {
           scroll
         >
           <View style={{ flexDirection: "row" }}>
-            <View style={styles.hourColumn}>
-              {Array(HOURS_IN_A_DAY)
-                .fill(0)
-                .map((_, hour) => (
-                  <Text key={hour} style={styles.lefthourCell}>
-                    {hour}
-                  </Text>
-                ))}
-            </View>
+            {renderHoursColumn()}
             {renderHours()}
           </View>
         </ScrollView>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleReset}>
-            <Text style={styles.buttonTextStyle}>Reset Selection</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSetAvailability}
-          >
-            <Text style={styles.buttonTextStyle}>Confirm Selection</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonTextStyle}>Suggest Raid</Text>
-          </TouchableOpacity>
-        </View>
+        {renderButtons()}
+      </View>
+    );
+  };
+
+  const renderHoursColumn = () => {
+    return (
+      <View style={styles.hourColumn}>
+        {Array(HOURS_IN_A_DAY)
+          .fill(0)
+          .map((_, hour) => (
+            <Text key={hour} style={styles.lefthourCell}>
+              {hour}
+            </Text>
+          ))}
+      </View>
+    );
+  };
+
+  const renderButtons = () => {
+    return (
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={handleReset}>
+          <Text style={styles.buttonTextStyle}>Reset Selection</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleSetAvailability}>
+          <Text style={styles.buttonTextStyle}>Confirm Selection</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonTextStyle}>Suggest Raid</Text>
+        </TouchableOpacity>
       </View>
     );
   };
 
   return (
     <View style={styles.mainContainer}>
-      {renderHeader()}
-      {renderSummary()}
+      <Header
+        date={date}
+        handlePrevDate={handlePrevDate}
+        handleNextDate={handleNextDate}
+      />
+      <Summary
+        availability={availability}
+        calculateSummary={calculateSummary}
+      />
       {renderGrid()}
     </View>
   );
