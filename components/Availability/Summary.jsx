@@ -7,20 +7,12 @@ const Summary = ({ availability, calculateSummary }) => {
 
   return (
     <View style={styles.summaryContainer}>
-      {availability.length > 0 ? (
-        <>
-          <Text style={[styles.summaryText]}>
-            Starting Time: {startTime} - End Time: {endTime}
-          </Text>
-          <Text style={[styles.summaryText]}>
-            Available Time Slots: {timeslots}
-          </Text>
-        </>
-      ) : (
-        <Text style={[styles.summaryText]}>
-          No availability data found for this date.
-        </Text>
-      )}
+      <Text style={[styles.summaryText]}>
+        Starting Time: {startTime} - End Time: {endTime}
+      </Text>
+      <Text style={[styles.summaryText]}>
+        Available Time Slots: {timeslots}
+      </Text>
     </View>
   );
 };

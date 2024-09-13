@@ -19,42 +19,42 @@ const users = [
   {
     userId: "user-1",
     name: "User 1",
-    image: "",
+    image: "https://picsum.photos/40/40?image=1",
   },
   {
     userId: "user-2",
     name: "User 2",
-    image: "",
+    image: "https://picsum.photos/40/40?image=2",
   },
   {
     userId: "user-3",
     name: "User 3",
-    image: "",
+    image: "https://picsum.photos/40/40?image=3",
   },
   {
     userId: "user-4",
     name: "User 4",
-    image: "",
+    image: "https://picsum.photos/40/40?image=4",
   },
   {
     userId: "user-5",
     name: "User 5",
-    image: "",
+    image: "https://picsum.photos/40/40?image=5",
   },
   {
     userId: "user-6",
     name: "User 6",
-    image: "",
+    image: "https://picsum.photos/40/40?image=6",
   },
   {
     userId: "user-7",
     name: "User 7",
-    image: "",
+    image: "https://picsum.photos/40/40?image=7",
   },
   {
     userId: "user-8",
     name: "User 8",
-    image: "",
+    image: "https://picsum.photos/40/40?image=8",
   },
 ];
 const getyyyymmdd = (date) => {
@@ -209,20 +209,25 @@ const AvailabilityWidget = () => {
   };
 
   //renders how the cells are displayed
+  const renderHourCell = (hour, user, index) => {
+    const availabilityStatus = getAvailabilityStatus(index, user);
+    return (
+      <TouchableOpacity
+        key={`${user.userId}-${index}`}
+        style={[styles.hourCell, availabilityStatus]}
+        onPress={() => handleHourPress(date, index, user.userId)}
+      >
+        <Text style={styles.hourText}>{hour}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   const renderHours = () => {
     return users.map((user, userIndex) => (
       <View key={user.userId} style={styles.hourColumn}>
         {Array(HOURS_IN_A_DAY)
           .fill(0)
-          .map((hour, index) => (
-            <TouchableOpacity
-              key={`${userIndex}-${index}`}
-              style={[styles.hourCell, getAvailabilityStatus(index, user)]}
-              onPress={() => handleHourPress(date, index, user.userId)} // Pass date, hour, and userId
-            >
-              <Text style={styles.hourText}>{index}</Text>
-            </TouchableOpacity>
-          ))}
+          .map((_, hour) => renderHourCell(hour, user, hour))}
       </View>
     ));
   };
@@ -231,12 +236,12 @@ const AvailabilityWidget = () => {
     const timeslots = [];
 
     for (let hour = 0; hour < 24; hour++) {
-      const isHourAvailable = users.every((user) => {
+      const allUsersAvailable = users.every((user) => {
         const availabilityStatus = getAvailabilityStatus(hour, user);
         return availabilityStatus.backgroundColor !== "#E74C3C";
       });
 
-      if (isHourAvailable) {
+      if (allUsersAvailable) {
         timeslots.push(hour);
       }
     }
@@ -247,26 +252,21 @@ const AvailabilityWidget = () => {
     return { startTime, endTime, timeslots: timeslotsString };
   };
 
-  const renderUser = (availabilityItem, userIndex) => {
-    const user = users.find((user) => user.userId === availabilityItem.userId);
-    if (user) {
-      return (
-        <View key={availabilityItem.userId} style={styles.userName}>
-          {/* <Text style={styles.userName}>{user.name}</Text> */}
+  const renderUser = (user, index) => {
+    return (
+      <View key={user.userId} style={styles.userName}>
+        {user.image ? (
           <Image
-            source={user.image ? { uri: user.image } : null}
-            style={styles.image}
+            source={{ uri: user.image }}
+            style={[styles.userImage]} // Add fixed height and width
           />
-          {!user.image && (
-            <View style={styles.userImagePlaceholder}>
-              <Ionicons name="person" size={20} color="#ccc" />
-            </View>
-          )}
-        </View>
-      );
-    } else {
-      return null;
-    }
+        ) : (
+          <View style={styles.userImagePlaceholder}>
+            <Ionicons name="person" size={20} color="#ccc" />
+          </View>
+        )}
+      </View>
+    );
   };
 
   //renders users, hours and buttons
@@ -277,9 +277,7 @@ const AvailabilityWidget = () => {
           <View style={[styles.userName, styles.leftbufferCell]}>
             <Text>&#8203;&#8203;</Text>
           </View>
-          {availability.map((availabilityItem, userIndex) =>
-            renderUser(availabilityItem, userIndex)
-          )}
+          {users.map((user, index) => renderUser(user, index))}
         </View>
         <ScrollView
           showsHorizontalScrollIndicator={false}

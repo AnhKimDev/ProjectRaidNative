@@ -52,7 +52,7 @@ export default StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    flexBasis: "7%",
+    flexBasis: "11%",
     flexGrow: 1,
   },
   leftbufferCell: {
@@ -88,6 +88,8 @@ export default StyleSheet.create({
     fontSize: 30,
     color: colors.white,
     borderColor: "black",
+    height: 40, // Add a fixed height
+    width: 40, // Add a fixed width
   },
   green: { backgroundColor: colors.green },
   yellow: { backgroundColor: colors.yellow },
@@ -104,7 +106,21 @@ export default StyleSheet.create({
     padding,
   },
   button: { backgroundColor: colors.blue, padding, borderRadius },
-  userImage: { flexGrow: 1, margin },
+  userImage: {
+    flexBasis: "4%",
+    flexGrow: 1,
+    margin,
+    borderRadius: 50,
+    aspectRatio: 1,
+    borderWidth: 2,
+    fontSize: 30,
+    borderColor: "black",
+    backgroundColor: "#333333",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    resizeMode: "cover",
+  },
   buttonTextStyle: {
     color: "white",
     textShadowColor: "black",
@@ -124,5 +140,6 @@ export default StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    resizeMode: "cover",
   },
 });
