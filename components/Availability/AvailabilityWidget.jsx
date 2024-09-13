@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import AvailabilityApi from "./../AvailabilityApi";
 import Header from "./Header";
 import Summary from "./Summary";
+import SuggestRaidModal from "./SuggestRaidModel";
 //import { users } from "./../data";
 
 const HOURS_IN_A_DAY = 24;
@@ -77,7 +78,15 @@ const AvailabilityWidget = () => {
   const [date, setDate] = useState(() => new Date(Date.now()));
   const [availability, setAvailability] = useState([]);
   const [highlightedHours, setHighlightedHours] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const handleSuggestRaidPress = () => {
+    setModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
   //update if date is changed
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -90,16 +99,6 @@ const AvailabilityWidget = () => {
     };
     fetchAvailability();
   }, [date]);
-
-  //handles arrow left
-  const handlePrevDate = () => {
-    setDate(new Date(date.setDate(date.getDate() - 1)));
-  };
-
-  //handles arrow right
-  const handleNextDate = () => {
-    setDate(new Date(date.setDate(date.getDate() + 1)));
-  };
 
   //TODO: handles setavaialbility button
   const handleSetAvailability = () => {
@@ -256,10 +255,7 @@ const AvailabilityWidget = () => {
     return (
       <View key={user.userId} style={styles.userName}>
         {user.image ? (
-          <Image
-            source={{ uri: user.image }}
-            style={[styles.userImage]} // Add fixed height and width
-          />
+          <Image source={{ uri: user.image }} style={[styles.userImage]} />
         ) : (
           <View style={styles.userImagePlaceholder}>
             <Ionicons name="person" size={20} color="#ccc" />
@@ -290,6 +286,12 @@ const AvailabilityWidget = () => {
           </View>
         </ScrollView>
         {renderButtons()}
+        <SuggestRaidModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          availability={availability}
+          calculateSummary={calculateSummary}
+        />
       </View>
     );
   };
@@ -317,7 +319,10 @@ const AvailabilityWidget = () => {
         <TouchableOpacity style={styles.button} onPress={handleSetAvailability}>
           <Text style={styles.buttonTextStyle}>Confirm Selection</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+        >
           <Text style={styles.buttonTextStyle}>Suggest Raid</Text>
         </TouchableOpacity>
       </View>
@@ -326,11 +331,7 @@ const AvailabilityWidget = () => {
 
   return (
     <View style={styles.mainContainer}>
-      <Header
-        date={date}
-        handlePrevDate={handlePrevDate}
-        handleNextDate={handleNextDate}
-      />
+      <Header date={date} setDate={setDate} />
       <Summary
         availability={availability}
         calculateSummary={calculateSummary}

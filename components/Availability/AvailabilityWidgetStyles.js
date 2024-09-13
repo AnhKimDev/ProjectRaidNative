@@ -1,26 +1,12 @@
 import { StyleSheet } from "react-native";
 
-const colors = {
-  primary: "#3C4C6C",
-  secondary: "#191970",
-  white: "#FFFFFF",
-  black: "#000000",
-  green: "#2ECC71",
-  yellow: "#FFF000",
-  red: "#E74C3C",
-  blue: "#3498DB",
-};
-
-const textShadow = {
-  textShadowColor: "black",
-  textShadowOffset: { width: 2, height: 2 },
-  textShadowRadius: 2,
-};
-
-const borderRadius = 8;
-const padding = 16;
-const margin = 4;
-
+import {
+  colors,
+  textShadow,
+  borderRadius,
+  padding,
+  margin,
+} from "../../constants/constants";
 const styles = {
   cell: {
     flexGrow: 1,

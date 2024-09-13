@@ -3,7 +3,7 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import styles from "./HeaderStyles";
 
-const Header = ({ date, handlePrevDate, handleNextDate }) => {
+const Header = ({ date, setDate }) => {
   const startDate = date;
   const startDayOfWeek = startDate.toLocaleString("default", {
     weekday: "long",
@@ -13,6 +13,15 @@ const Header = ({ date, handlePrevDate, handleNextDate }) => {
   const startYear = startDate.getFullYear();
   const weekRange = `${startDayOfWeek}, ${startMonth} ${startDay}, ${startYear}`;
 
+  //handles arrow left
+  const handlePrevDate = () => {
+    setDate(new Date(date.setDate(date.getDate() - 1)));
+  };
+
+  //handles arrow right
+  const handleNextDate = () => {
+    setDate(new Date(date.setDate(date.getDate() + 1)));
+  };
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.arrowButton} onPress={handlePrevDate}>
