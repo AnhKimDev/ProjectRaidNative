@@ -230,7 +230,13 @@ const AvailabilityWidget = () => {
       </View>
     ));
   };
-
+  const convertHourToDate = (hour) => {
+    const date = new Date();
+    date.setHours(hour);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    return date;
+  };
   const calculateSummary = () => {
     const timeslots = [];
 
@@ -245,8 +251,12 @@ const AvailabilityWidget = () => {
       }
     }
 
-    const startTime = timeslots.length ? Math.min(...timeslots) : "";
-    const endTime = timeslots.length ? Math.max(...timeslots) : "";
+    const startTime = timeslots.length
+      ? convertHourToDate(Math.min(...timeslots))
+      : "";
+    const endTime = timeslots.length
+      ? convertHourToDate(Math.max(...timeslots))
+      : "";
     const timeslotsString = timeslots.join(", ");
     return { startTime, endTime, timeslots: timeslotsString };
   };

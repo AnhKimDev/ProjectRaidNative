@@ -1,60 +1,101 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { View, Text } from "react-native";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import styles from "./TimePickerStyles";
 
-const TimePicker = () => {
-  const [startTime, setStartTime] = useState(new Date()); // Create a useState hook for the start time
-  const [endTime, setEndTime] = useState(new Date()); // Create a useState hook for the end time
-  const [showStartHourPicker, setShowStartHourPicker] = useState(false);
-  const [showStartMinutePicker, setShowStartMinutePicker] = useState(false);
-  const [showEndHourPicker, setShowEndHourPicker] = useState(false);
-  const [showEndMinutePicker, setShowEndMinutePicker] = useState(false);
+const TimePicker = ({ calculateSummary }) => {
+  let startTimeRef = useRef(null);
+  let endTimeRef = useRef(null);
+
+  const [startTime, setStartTime] = useState(() => {
+    const suggestedStartTime = calculateSummary().startTime;
+    startTimeRef.current = suggestedStartTime ? suggestedStartTime : new Date();
+    return startTimeRef.current;
+  });
+
+  const [endTime, setEndTime] = useState(() => {
+    const suggestedEndTime = calculateSummary().endTime;
+    endTimeRef.current = suggestedEndTime ? suggestedEndTime : new Date();
+    return endTimeRef.current;
+  });
+
+  const [showPicker, setShowPicker] = useState({
+    startHour: false,
+    startMinute: false,
+    endHour: false,
+    endMinute: false,
+  });
+
+  const { startTime: suggestedStartTime, endTime: suggestedEndTime } =
+    calculateSummary();
+  console.log("in timepicker", suggestedStartTime, suggestedEndTime);
 
   const openStartHourPicker = () => {
+    setShowPicker({ ...showPicker, startHour: true });
     DateTimePickerAndroid.open({
-      value: startTime,
+      value: startTimeRef.current,
       mode: "time",
       is24Hour: true,
       onChange: (event, selectedDate) => {
-        setShowStartHourPicker(false);
-        setStartTime(selectedDate);
+        setShowPicker({ ...showPicker, startHour: false });
+        startTimeRef.current = selectedDate;
+        setStartTime(startTimeRef.current);
       },
     });
   };
 
   const openStartMinutePicker = () => {
+    setShowPicker({ ...showPicker, startMinute: true });
     DateTimePickerAndroid.open({
-      value: startTime,
+      value: suggestedStartTime ? suggestedStartTime : startTime,
       mode: "time",
       is24Hour: true,
       onChange: (event, selectedDate) => {
-        setShowStartMinutePicker(false);
-        setStartTime(selectedDate);
+        setShowPicker({ ...showPicker, startMinute: false });
+        setStartTime((prevTime) => {
+          return new Date(
+            prevTime.getFullYear(),
+            prevTime.getMonth(),
+            prevTime.getDate(),
+            prevTime.getHours(),
+            selectedDate.getMinutes()
+          );
+        });
       },
     });
   };
 
   const openEndHourPicker = () => {
+    setShowPicker({ ...showPicker, endHour: true });
     DateTimePickerAndroid.open({
-      value: endTime,
+      value: endTimeRef.current,
       mode: "time",
       is24Hour: true,
       onChange: (event, selectedDate) => {
-        setShowEndHourPicker(false);
-        setEndTime(selectedDate);
+        setShowPicker({ ...showPicker, endHour: false });
+        endTimeRef.current = selectedDate;
+        setEndTime(endTimeRef.current);
       },
     });
   };
 
   const openEndMinutePicker = () => {
+    setShowPicker({ ...showPicker, endMinute: true });
     DateTimePickerAndroid.open({
-      value: endTime,
+      value: suggestedEndTime ? suggestedEndTime : endTime,
       mode: "time",
       is24Hour: true,
       onChange: (event, selectedDate) => {
-        setShowEndMinutePicker(false);
-        setEndTime(selectedDate);
+        setShowPicker({ ...showPicker, endMinute: false });
+        setEndTime((prevTime) => {
+          return new Date(
+            prevTime.getFullYear(),
+            prevTime.getMonth(),
+            prevTime.getDate(),
+            prevTime.getHours(),
+            selectedDate.getMinutes()
+          );
+        });
       },
     });
   };

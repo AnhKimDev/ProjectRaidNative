@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     alignItems: "center",
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
     padding: 24,
     borderWidth: 5,
     borderRadius: borderRadius,
@@ -29,13 +29,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     ...textShadow,
   },
+  inputContainer: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
   input: {
     height: 40,
     borderColor: colors.black,
     borderWidth: 1,
-    marginBottom: 10,
     padding: 10,
     backgroundColor: colors.white,
+    flex: 1,
+  },
+  descriptionInput: {
+    height: 80, // adjust the height to accommodate multiple lines
+    textAlignVertical: "top", // align the text to the top
   },
   dateContainer: {
     flexDirection: "row",
@@ -53,7 +61,6 @@ const styles = StyleSheet.create({
   },
   timeContainer: {
     alignItems: "center",
-    zIndex: 999,
     marginBottom: 10,
   },
   timeLabel: {
@@ -69,11 +76,18 @@ const styles = StyleSheet.create({
   picker: {
     width: "45%",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   button: {
     backgroundColor: colors.blue,
     padding: padding,
     borderRadius: borderRadius,
     marginBottom: 10,
+    marginRight: 16,
   },
   buttonText: {
     fontSize: 16,

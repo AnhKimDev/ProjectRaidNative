@@ -39,31 +39,40 @@ const SuggestRaidModal = ({
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Suggest Raid</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Title"
-            value={title}
-            onChangeText={(text) => setTitle(text)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            value={description}
-            onChangeText={(text) => setDescription(text)}
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Title"
+              value={title}
+              onChangeText={(text) => setTitle(text)}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, styles.descriptionInput]}
+              placeholder="Description"
+              value={description}
+              onChangeText={(text) => setDescription(text)}
+              multiline={true}
+              numberOfLines={4}
+            />
+          </View>
           <View style={styles.dateContainer}>
             <Text style={styles.dateLabel}>Date:</Text>
             <Text style={styles.dateValue}>{date.toLocaleDateString()}</Text>
           </View>
           <View style={styles.timeContainer}>
-            <TimePicker />
+            <TimePicker calculateSummary={calculateSummary} />
           </View>
-          <TouchableOpacity style={styles.button} onPress={handleSuggestRaid}>
-            <Text style={styles.buttonText}>Suggest Raid</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={onClose}>
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleSuggestRaid}>
+              <Text style={styles.buttonText}>Suggest Raid</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onClose}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
