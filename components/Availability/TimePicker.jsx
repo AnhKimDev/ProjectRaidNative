@@ -28,7 +28,6 @@ const TimePicker = ({ calculateSummary }) => {
 
   const { startTime: suggestedStartTime, endTime: suggestedEndTime } =
     calculateSummary();
-  console.log("in timepicker", suggestedStartTime, suggestedEndTime);
 
   const openStartHourPicker = () => {
     setShowPicker({ ...showPicker, startHour: true });

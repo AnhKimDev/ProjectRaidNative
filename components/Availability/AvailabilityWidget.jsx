@@ -301,6 +301,7 @@ const AvailabilityWidget = () => {
           onClose={() => setModalVisible(false)}
           availability={availability}
           calculateSummary={calculateSummary}
+          passeddate={date}
         />
       </View>
     );

@@ -3,16 +3,18 @@ import { View, Text, TextInput, TouchableOpacity, Modal } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import styles from "./SuggestRaidModalStyles";
 import TimePicker from "./TimePicker";
+import Notification from "../Notification";
 
 const SuggestRaidModal = ({
   visible,
   onClose,
   availability,
   calculateSummary,
+  passeddate,
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(Date.now()));
   const [startTimeHour, setStartTimeHour] = useState(0);
   const [startTimeMinute, setStartTimeMinute] = useState(0);
   const [endTimeHour, setEndTimeHour] = useState(0);
@@ -22,16 +24,14 @@ const SuggestRaidModal = ({
     calculateSummary();
 
   const handleSuggestRaid = () => {
-    // TO DO: implement logic to suggest a raid with the provided details
     console.log(
       "Suggest Raid:",
       title,
       description,
-      date,
-      `${startTimeHour.toString().padStart(2, "0")}:${startTimeMinute.toString().padStart(2, "0")}`,
-      `${endTimeHour.toString().padStart(2, "0")}:${endTimeMinute.toString().padStart(2, "0")}`
+      passeddate,
+      suggestedStartTime,
+      suggestedEndTime
     );
-    onClose();
   };
 
   return (
