@@ -1,59 +1,51 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import styles from "./AvailabilityWidgetStyles";
 import { Ionicons } from "@expo/vector-icons";
-import AvailabilityApi from "../../api/AvailabilityApi";
 import Header from "./Header";
 import Summary from "./Summary";
 import SuggestRaidModal from "./Modal/SuggestRaidModel";
-//import { users } from "./../data";
+import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
 
 const HOURS_IN_A_DAY = 24;
 const users = [
   {
-    userId: "user-1",
+    userID: "user-1",
     name: "User 1",
     image: "https://picsum.photos/40/40?image=1",
   },
   {
-    userId: "user-2",
+    userID: "user-2",
     name: "User 2",
     image: "https://picsum.photos/40/40?image=2",
   },
   {
-    userId: "user-3",
+    userID: "user-3",
     name: "User 3",
     image: "https://picsum.photos/40/40?image=3",
   },
   {
-    userId: "user-4",
+    userID: "user-4",
     name: "User 4",
     image: "https://picsum.photos/40/40?image=4",
   },
   {
-    userId: "user-5",
+    userID: "user-5",
     name: "User 5",
     image: "https://picsum.photos/40/40?image=5",
   },
   {
-    userId: "user-6",
+    userID: "user-6",
     name: "User 6",
     image: "https://picsum.photos/40/40?image=6",
   },
   {
-    userId: "user-7",
+    userID: "user-7",
     name: "User 7",
     image: "https://picsum.photos/40/40?image=7",
   },
   {
-    userId: "user-8",
+    userID: "user-8",
     name: "User 8",
     image: "https://picsum.photos/40/40?image=8",
   },
@@ -80,19 +72,11 @@ const AvailabilityWidget = () => {
   const [highlightedHours, setHighlightedHours] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleSuggestRaidPress = () => {
-    setModalVisible(true);
-  };
-
-  const handleModalClose = () => {
-    setModalVisible(false);
-  };
-  //update if date is changed
   useEffect(() => {
     const fetchAvailability = async () => {
-      const groupId = "group-1";
-      const availability = await AvailabilityApi.getAvailabilityByGroup(
-        groupId,
+      const groupID = "group-1";
+      const availability = await MockDatabaseAdapter.getAvailabilityByGroup(
+        groupID,
         date
       );
       setAvailability(availability);
@@ -100,12 +84,11 @@ const AvailabilityWidget = () => {
     fetchAvailability();
   }, [date]);
 
-  //TODO: handles setavaialbility button
   const handleSetAvailability = () => {
     const availabilityByDate = {};
 
-    Object.keys(highlightedHours).forEach((userId) => {
-      highlightedHours[userId].forEach((entry) => {
+    Object.keys(highlightedHours).forEach((userID) => {
+      highlightedHours[userID].forEach((entry) => {
         const dateIso = entry.date;
         const hours = entry.hours.reduce(
           (acc, hour) => ({ ...acc, [hour]: true }),
@@ -116,7 +99,7 @@ const AvailabilityWidget = () => {
           availabilityByDate[dateIso] = {};
         }
 
-        availabilityByDate[dateIso][userId] = hours;
+        availabilityByDate[dateIso][userID] = hours;
       });
     });
 
@@ -125,7 +108,7 @@ const AvailabilityWidget = () => {
       const endDate = new Date(startDate);
       const usersAvailability = availabilityByDate[dateIso];
 
-      AvailabilityApi.updateAvailabilityByGroup(
+      MockDatabaseAdapter.updateAvailabilityByGroup(
         dateIso,
         startDate,
         endDate,
@@ -136,10 +119,9 @@ const AvailabilityWidget = () => {
       });
     });
   };
-
   const getAvailabilityStatus = (hour, user) => {
     const userAvailability = availability.find(
-      (avail) => avail.userId === user.userId
+      (avail) => avail.userID === user.userID
     );
 
     let isAvailable = false;
@@ -149,7 +131,7 @@ const AvailabilityWidget = () => {
 
     const convertedDate = getyyyymmdd(date);
 
-    const userHighlightedHours = highlightedHours?.[user.userId];
+    const userHighlightedHours = highlightedHours?.[user.userID];
     const isHighlighted =
       userHighlightedHours &&
       userHighlightedHours.some(
@@ -164,26 +146,25 @@ const AvailabilityWidget = () => {
       return styles.red; // Return red by default
     }
   };
-
-  const handleHourPress = (date, hour, userId) => {
+  const handleHourPress = (date, hour, userID) => {
     const convertedDate = getyyyymmdd(date);
 
     setHighlightedHours((prevHighlightedHours) => {
       const newHighlightedHours = { ...prevHighlightedHours };
 
-      if (!newHighlightedHours[userId]) {
-        newHighlightedHours[userId] = [];
+      if (!newHighlightedHours[userID]) {
+        newHighlightedHours[userID] = [];
       }
 
-      let userDateEntryIndex = newHighlightedHours[userId].findIndex(
+      let userDateEntryIndex = newHighlightedHours[userID].findIndex(
         (entry) => entry.date === convertedDate
       );
       if (userDateEntryIndex === -1) {
-        newHighlightedHours[userId].push({ date: convertedDate, hours: [] });
-        userDateEntryIndex = newHighlightedHours[userId].length - 1;
+        newHighlightedHours[userID].push({ date: convertedDate, hours: [] });
+        userDateEntryIndex = newHighlightedHours[userID].length - 1;
       }
 
-      const userDateEntry = newHighlightedHours[userId][userDateEntryIndex];
+      const userDateEntry = newHighlightedHours[userID][userDateEntryIndex];
       const hourIndex = userDateEntry.hours.indexOf(hour);
       if (hourIndex === -1) {
         userDateEntry.hours.push(hour);
@@ -195,35 +176,31 @@ const AvailabilityWidget = () => {
     });
 
     console.log(
-      `Hour ${hour} selected for user ${userId} on date ${convertedDate}`
+      `Hour ${hour} selected for user ${userID} on date ${convertedDate}`
     );
     //console.log("Updated highlighted hours:", highlightedHours);
   };
-
   const handleReset = () => {
     //console.log("before reset", highlightedHours);
     //console.log("availability", availability);
     setHighlightedHours({});
     //console.log("after reset", highlightedHours);
   };
-
-  //renders how the cells are displayed
   const renderHourCell = (hour, user, index) => {
     const availabilityStatus = getAvailabilityStatus(index, user);
     return (
       <TouchableOpacity
-        key={`${user.userId}-${index}`}
+        key={`${user.userID}-${index}`}
         style={[styles.hourCell, availabilityStatus]}
-        onPress={() => handleHourPress(date, index, user.userId)}
+        onPress={() => handleHourPress(date, index, user.userID)}
       >
         <Text style={styles.hourText}>{hour}</Text>
       </TouchableOpacity>
     );
   };
-
   const renderHours = () => {
     return users.map((user, userIndex) => (
-      <View key={user.userId} style={styles.hourColumn}>
+      <View key={user.userID} style={styles.hourColumn}>
         {Array(HOURS_IN_A_DAY)
           .fill(0)
           .map((_, hour) => renderHourCell(hour, user, hour))}
@@ -260,10 +237,9 @@ const AvailabilityWidget = () => {
     const timeslotsString = timeslots.join(", ");
     return { startTime, endTime, timeslots: timeslotsString };
   };
-
   const renderUser = (user, index) => {
     return (
-      <View key={user.userId} style={styles.userName}>
+      <View key={user.userID} style={styles.userName}>
         {user.image ? (
           <Image source={{ uri: user.image }} style={[styles.userImage]} />
         ) : (
@@ -274,8 +250,6 @@ const AvailabilityWidget = () => {
       </View>
     );
   };
-
-  //renders users, hours and buttons
   const renderGrid = () => {
     return (
       <View style={[styles.gridContainer, { flexDirection: "column" }]}>
@@ -306,7 +280,6 @@ const AvailabilityWidget = () => {
       </View>
     );
   };
-
   const renderHoursColumn = () => {
     return (
       <View style={styles.hourColumn}>
@@ -320,7 +293,6 @@ const AvailabilityWidget = () => {
       </View>
     );
   };
-
   const renderButtons = () => {
     return (
       <View style={styles.buttonContainer}>
@@ -339,7 +311,6 @@ const AvailabilityWidget = () => {
       </View>
     );
   };
-
   return (
     <View style={styles.mainContainer}>
       <Header date={date} setDate={setDate} />

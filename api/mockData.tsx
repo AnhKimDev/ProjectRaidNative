@@ -394,3 +394,5 @@ export const availability = [
     hours: [11, 12, 13, 14, 15, 16],
   },
 ];
+
+export default { groups, users, availability };

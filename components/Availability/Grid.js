@@ -12,10 +12,10 @@ import styles from "./AvailabilityWidgetStyles";
 const HOURS_IN_A_DAY = 24;
 
 const renderUser = (availabilityItem, userIndex, users) => {
-  const user = users.find((user) => user.userId === availabilityItem.userId);
+  const user = users.find((user) => user.userID === availabilityItem.userID);
   if (user) {
     return (
-      <View key={availabilityItem.userId} style={styles.userName}>
+      <View key={availabilityItem.userID} style={styles.userName}>
         {user.image ? (
           <Image
             source={{ uri: user.image }}
@@ -48,7 +48,7 @@ const renderHoursColumn = () => {
 };
 const getAvailabilityStatus = (hour, user) => {
   const userAvailability = availability.find(
-    (avail) => avail.userId === user.userId
+    (avail) => avail.userID === user.userID
   );
 
   let isAvailable = false;
@@ -58,7 +58,7 @@ const getAvailabilityStatus = (hour, user) => {
 
   const convertedDate = getyyyymmdd(date);
 
-  const userHighlightedHours = highlightedHours?.[user.userId];
+  const userHighlightedHours = highlightedHours?.[user.userID];
   const isHighlighted =
     userHighlightedHours &&
     userHighlightedHours.some(
@@ -77,9 +77,9 @@ const renderHourCell = (hour, user, index) => {
   const availabilityStatus = getAvailabilityStatus(index, user);
   return (
     <TouchableOpacity
-      key={`${user.userId}-${index}`}
+      key={`${user.userID}-${index}`}
       style={[styles.hourCell, availabilityStatus]}
-      onPress={() => handleHourPress(date, index, user.userId)}
+      onPress={() => handleHourPress(date, index, user.userID)}
     >
       <Text style={styles.hourText}>{hour}</Text>
     </TouchableOpacity>
@@ -88,7 +88,7 @@ const renderHourCell = (hour, user, index) => {
 
 const renderHours = (users) => {
   return users.map((user, userIndex) => (
-    <View key={user.userId} style={styles.hourColumn}>
+    <View key={user.userID} style={styles.hourColumn}>
       {Array(HOURS_IN_A_DAY)
         .fill(0)
         .map((hour, index) => renderHourCell(hour, user, index))}

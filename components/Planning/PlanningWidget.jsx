@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import styles from "./PlanningWidgetStyles";
-import AvailabilityApi from "../../api/AvailabilityApi";
+import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
 
 const weekdays = [
   "Monday",
@@ -13,7 +13,7 @@ const weekdays = [
   "Sunday",
 ];
 user = {
-  userId: "user-1",
+  userID: "user-1",
   name: "User 1",
   image: "",
 };
@@ -68,11 +68,13 @@ const PlanningWidget = () => {
   };
 
   useEffect(() => {
-    AvailabilityApi.getAvailabilityByUser(user.userId, startDate, endDate).then(
-      (availability) => {
-        setAvailability(availability);
-      }
-    );
+    MockDatabaseAdapter.getAvailabilityByUser(
+      user.userID,
+      startDate,
+      endDate
+    ).then((availability) => {
+      setAvailability(availability);
+    });
   }, [startDate, endDate]);
 
   const getDateFromDay = (day) => {
@@ -134,9 +136,16 @@ const PlanningWidget = () => {
       });
       updatedSelectedHours[date] = newSelectedHoursForDate;
     });
-    console.log("updatedSelectedHours:", updatedSelectedHours);
-    AvailabilityApi.updateAvailabilityByUser(
-      user.userId,
+    //console.log("updatedSelectedHours:", updatedSelectedHours);
+    console.log(
+      "plan 138:",
+      user.userID,
+      startDate,
+      endDate,
+      updatedSelectedHours
+    );
+    MockDatabaseAdapter.updateAvailabilityByUser(
+      user.userID,
       startDate,
       endDate,
       updatedSelectedHours
@@ -144,8 +153,8 @@ const PlanningWidget = () => {
       // Reset the selected hours state
       setSelectedHoursState({});
       // Fetch the updated availability data
-      AvailabilityApi.getAvailabilityByUser(
-        user.userId,
+      MockDatabaseAdapter.getAvailabilityByUser(
+        user.userID,
         startDate,
         endDate
       ).then((availability) => {
