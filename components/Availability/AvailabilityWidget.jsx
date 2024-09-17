@@ -9,10 +9,10 @@ import {
 } from "react-native";
 import styles from "./AvailabilityWidgetStyles";
 import { Ionicons } from "@expo/vector-icons";
-import AvailabilityApi from "./../AvailabilityApi";
+import AvailabilityApi from "../../api/AvailabilityApi";
 import Header from "./Header";
 import Summary from "./Summary";
-import SuggestRaidModal from "./SuggestRaidModel";
+import SuggestRaidModal from "./Modal/SuggestRaidModel";
 //import { users } from "./../data";
 
 const HOURS_IN_A_DAY = 24;

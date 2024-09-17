@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import styles from "./PlanningWidgetStyles";
-import AvailabilityApi from "./AvailabilityApi";
+import AvailabilityApi from "../../api/AvailabilityApi";
 
 const weekdays = [
   "Monday",

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import PlanningWidget from "../../components/PlanningWidget";
+import PlanningWidget from "../../components/Planning/PlanningWidget";
 
 const Planning = () => {
   return (

@@ -6,7 +6,7 @@ import {
   borderRadius,
   padding,
   margin,
-} from "../../constants/constants";
+} from "../../../constants/constants";
 
 const styles = StyleSheet.create({
   container: {

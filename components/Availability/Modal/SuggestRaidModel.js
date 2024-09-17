@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import styles from "./SuggestRaidModalStyles";
 import TimePicker from "./TimePicker";
-import Notification from "../Notification";
 
 const SuggestRaidModal = ({
   visible,

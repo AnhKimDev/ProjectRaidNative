@@ -3,36 +3,45 @@ import { users, availability, groups } from "./data";
 const AvailabilityApi = {
   availabilityData: [...availability],
 
-  async getAvailabilityByUser(userId, startDate, endDate) {
-    console.log("Get availabilityByUser called", userId, startDate, endDate);
+  async setAvailability() {},
+  async getAvailability() {},
+  async getGroupsByUser(userID) {},
+  async getUsersByGroup(groupID) {},
+  async updateGroup(groupID, groupname, userIDs) {},
+  async updateUser(userID, username, image) {},
+  async addUserToGroup(userID, groupID) {},
+  async removeUserFromGroup(userID, groupID) {},
+
+  async getAvailabilityByUser(userID, startDate, endDate) {
+    //console.log("Get availabilityByUser called", userID, startDate, endDate);
     const startDateIso = startDate.toISOString().split("T")[0];
     const endDateIso = endDate.toISOString().split("T")[0];
 
     return this.availabilityData.filter(
-      ({ userId: id, date }) =>
-        id === userId && date >= startDateIso && date <= endDateIso
+      ({ userID: id, date }) =>
+        id === userID && date >= startDateIso && date <= endDateIso
     );
   },
 
   async getAvailabilityByGroup(groupID, date) {
-    console.log("Get availability by group called", groupID, date);
+    //console.log("Get availability by group called", groupID, date);
     const startDateIso = date.toISOString().split("T")[0];
     const group = groups.find((group) => group.groupId === groupID.toString());
     if (!group) {
       throw new Error(`Group not found: ${groupId}`);
     }
-    const userIds = group.userIds;
+    const userIDs = group.userIDs;
 
     return this.availabilityData.filter(
-      ({ userId: id, date: availabilityDate }) =>
-        userIds.includes(id) && availabilityDate === startDateIso
+      ({ userID: id, date: availabilityDate }) =>
+        userIDs.includes(id) && availabilityDate === startDateIso
     );
   },
 
-  async updateAvailabilityByUser(userId, startDate, endDate, hours) {
+  async updateAvailabilityByUser(userID, startDate, endDate, hours) {
     console.log(
       "UpdateAvailabilityByUser called",
-      userId,
+      userID,
       startDate,
       endDate,
       hours
@@ -42,15 +51,15 @@ const AvailabilityApi = {
 
     Object.keys(hours).forEach((dateIso) => {
       const existingItem = this.availabilityData.find(
-        ({ date, userId: id }) => date === dateIso && id === userId
+        ({ date, userID: id }) => date === dateIso && id === userID
       );
 
       if (dateIso >= startDateIso && dateIso <= endDateIso) {
         existingItem
           ? this.compareAndSyncHours(existingItem, hours[dateIso])
-          : this.addAvailabilityItem(userId, dateIso, hours[dateIso]);
+          : this.addAvailabilityItem(userID, dateIso, hours[dateIso]);
       } else {
-        this.removeAvailabilityItem(userId, dateIso);
+        this.removeAvailabilityItem(userID, dateIso);
       }
     });
 
@@ -71,9 +80,9 @@ const AvailabilityApi = {
       usersAvailability
     );
 
-    Object.keys(usersAvailability).forEach((userId) => {
-      const hours = usersAvailability[userId];
-      this.updateAvailabilityByUser(userId, startDate, endDate, {
+    Object.keys(usersAvailability).forEach((userID) => {
+      const hours = usersAvailability[userID];
+      this.updateAvailabilityByUser(userID, startDate, endDate, {
         [dateIso]: hours,
       });
     });
@@ -81,18 +90,18 @@ const AvailabilityApi = {
     return Promise.resolve();
   },
 
-  addAvailabilityItem(userId, dateIso, hours) {
+  addAvailabilityItem(userID, dateIso, hours) {
     console.log("Adding availability item for date:", dateIso);
     const newHours = Object.keys(hours)
       .filter((hour) => hours[hour])
       .map(Number);
-    this.availabilityData.push({ userId, date: dateIso, hours: newHours });
+    this.availabilityData.push({ userID, date: dateIso, hours: newHours });
   },
 
-  removeAvailabilityItem(userId, dateIso) {
+  removeAvailabilityItem(userID, dateIso) {
     console.log("Removing availability item for date:", dateIso);
     const index = this.availabilityData.findIndex(
-      ({ date, userId: id }) => date === dateIso && id === userId
+      ({ date, userID: id }) => date === dateIso && id === userID
     );
     if (index !== -1) {
       this.availabilityData.splice(index, 1);

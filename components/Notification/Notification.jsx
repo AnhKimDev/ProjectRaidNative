@@ -9,10 +9,6 @@ const Notification = ({
   startTime,
   endTime,
 }) => {
-  console.log("Notification component rendered"); // <--- Add this log
-
-  console.log("Rendered notification with title:", title); // <--- Add this log
-
   return (
     <View style={notificationStyles.notificationContainer}>
       <View style={notificationStyles.notification}>

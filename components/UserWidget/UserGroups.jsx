@@ -1,12 +1,12 @@
 // components/Groups.js
 import React from "react";
 import { View, Text, Image, ScrollView } from "react-native";
-import styles from "./GroupsStyles";
-import { groups, users } from "../data";
+import styles from "./UserGroupsStyles";
+import { groups, users } from "../../api/data";
 
 const getRandomImageId = () => Math.floor(Math.random() * 1084);
 
-const Groups = () => {
+const UserGroups = () => {
   return (
     <View style={styles.groupsContainer}>
       <Text style={styles.groupsText}>Groups:</Text>
@@ -39,4 +39,4 @@ const Groups = () => {
   );
 };
 
-export default Groups;
+export default UserGroups;
