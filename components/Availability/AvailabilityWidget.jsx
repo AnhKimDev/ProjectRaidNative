@@ -115,7 +115,7 @@ const AvailabilityWidget = () => {
         usersAvailability
       ).then(() => {
         handleReset();
-        //setDate(new Date(date)); // or setDate(date) if you don't need a new Date object
+        setDate(new Date(date)); // or setDate(date) if you don't need a new Date object
       });
     });
   };
