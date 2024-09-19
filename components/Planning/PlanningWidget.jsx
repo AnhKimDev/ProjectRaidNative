@@ -198,6 +198,7 @@ const PlanningWidget = () => {
 
   const renderHours = () => {
     return weekdays.map((day, dayIndex) => {
+      const formattedDate = getDateFromDay(day);
       return (
         <View key={dayIndex} style={styles.dayHourColumn}>
           {Array(HOURS_IN_A_DAY)
@@ -205,7 +206,7 @@ const PlanningWidget = () => {
             .map((_, hour) => {
               return (
                 <TouchableOpacity
-                  key={`${dayIndex}-${hour}`}
+                  key={`${formattedDate}-${hour}`} // Use a unique key prop
                   style={[styles.hourCell, getAvailabilityStatus(day, hour)]}
                   onPress={() => handleHourPress(day, hour)}
                 >
@@ -241,10 +242,12 @@ const PlanningWidget = () => {
               {Array(HOURS_IN_A_DAY)
                 .fill(0)
                 .map((_, hour) => (
-                  <View style={styles.lefthourCell}>
+                  <View
+                    key={`${startDate.toISOString().split("T")[0]}-${hour}`} // Use a unique key prop
+                    style={styles.lefthourCell}
+                  >
                     <TouchableOpacity>
                       <Text
-                        key={hour}
                         style={styles.lefthourCell}
                         onPress={() => handleHourRowPress(hour)}
                       >

@@ -217,18 +217,82 @@ export class MockDatabaseAdapter implements DatabaseInterface {
     groupIDs?: string[],
     description?: string
   ): Promise<void> {
-    const newEvent: Event = {
-      eventID: String(this.mockData.events.length + 1),
+    console.log(
+      "create Event called, ",
       title,
-      description,
       date,
       startTime,
       endTime,
       suggestedBy,
       userIDs,
       groupIDs,
+      description
+    );
+
+    if (!title || !date || !startTime || !endTime || !suggestedBy) {
+      throw new Error("Missing required parameter");
+    }
+
+    if (typeof date !== "string") {
+      throw new Error("Invalid date parameter");
+    }
+
+    const startTimeParts = startTime.split(":");
+    const endTimeParts = endTime.split(":");
+
+    if (startTimeParts.length !== 2 || endTimeParts.length !== 2) {
+      throw new Error("Invalid time format. Expected HH:MM");
+    }
+
+    const startTimeHours = parseInt(startTimeParts[0], 10);
+    const startTimeMinutes = parseInt(startTimeParts[1], 10);
+    const endTimeHours = parseInt(endTimeParts[0], 10);
+    const endTimeMinutes = parseInt(endTimeParts[1], 10);
+
+    if (
+      isNaN(startTimeHours) ||
+      isNaN(startTimeMinutes) ||
+      isNaN(endTimeHours) ||
+      isNaN(endTimeMinutes)
+    ) {
+      throw new Error("Invalid time format. Expected HH:MM");
+    }
+
+    if (
+      startTimeHours < 0 ||
+      startTimeHours > 23 ||
+      endTimeHours < 0 ||
+      endTimeHours > 23
+    ) {
+      throw new Error("Invalid hour value. Expected 0-23");
+    }
+
+    if (
+      startTimeMinutes < 0 ||
+      startTimeMinutes > 59 ||
+      endTimeMinutes < 0 ||
+      endTimeMinutes > 59
+    ) {
+      throw new Error("Invalid minute value. Expected 0-59");
+    }
+
+    const eventDate = date; // Convert date to string in YYYY-MM-DD format
+    const startTimeFormatted = `${startTimeHours.toString().padStart(2, "0")}:${startTimeMinutes.toString().padStart(2, "0")}`; // Format startTime as HH:MM
+    const endTimeFormatted = `${endTimeHours.toString().padStart(2, "0")}:${endTimeMinutes.toString().padStart(2, "0")}`; // Format endTime as HH:MM
+
+    const newEvent: Event = {
+      eventID: String(this.mockData.events.length + 1),
+      title,
+      description,
+      date: eventDate,
+      startTime: startTimeFormatted,
+      endTime: endTimeFormatted,
+      suggestedBy,
+      userIDs,
+      groupIDs,
     };
     this.mockData.events.push(newEvent);
+    console.log("event created: ", newEvent);
   }
 
   async updateEvent(

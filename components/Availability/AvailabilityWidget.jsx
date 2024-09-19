@@ -192,10 +192,10 @@ const AvailabilityWidget = () => {
     //console.log("after reset", highlightedHours);
   };
   const renderHourCell = (hour, user, index) => {
-    const availabilityStatus = getAvailabilityStatus(index, user);
+    const availabilityStatus = getAvailabilityStatus(hour, user);
     return (
       <TouchableOpacity
-        key={`${user.userID}-${index}`}
+        key={`${date}-${hour}-${user.userID}`}
         style={[styles.hourCell, availabilityStatus]}
         onPress={() => handleHourPress(date, index, user.userID)}
       >
@@ -208,7 +208,7 @@ const AvailabilityWidget = () => {
       <View key={user.userID} style={styles.hourColumn}>
         {Array(HOURS_IN_A_DAY)
           .fill(0)
-          .map((_, hour) => renderHourCell(hour, user, hour))}
+          .map((_, hour) => renderHourCell(hour, user, userIndex))}
       </View>
     ));
   };
@@ -246,7 +246,7 @@ const AvailabilityWidget = () => {
     return (
       <View key={user.userID} style={styles.userName}>
         {user.image ? (
-          <Image source={{ uri: user.image }} style={[styles.userImage]} />
+          <Image source={{ uri: user.image }} style={styles.userImage} />
         ) : (
           <View style={styles.userImagePlaceholder}>
             <Ionicons name="person" size={20} color="#ccc" />
@@ -280,7 +280,9 @@ const AvailabilityWidget = () => {
           onClose={() => setModalVisible(false)}
           availability={availability}
           calculateSummary={calculateSummary}
-          passeddate={date}
+          passeddate={getyyyymmdd(date)}
+          suggestedStartTime={calculateSummary().startTime}
+          suggestedEndTime={calculateSummary().endTime}
         />
       </View>
     );
@@ -291,10 +293,9 @@ const AvailabilityWidget = () => {
         {Array(HOURS_IN_A_DAY)
           .fill(0)
           .map((_, hour) => (
-            <View style={styles.lefthourCell}>
+            <View key={`${date}-${hour}`} style={styles.lefthourCell}>
               <TouchableOpacity>
                 <Text
-                  key={hour}
                   style={styles.lefthourCell}
                   onPress={() => handleHourRowPress(hour)}
                 >

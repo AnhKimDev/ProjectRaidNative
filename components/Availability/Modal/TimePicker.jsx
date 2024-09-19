@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import styles from "./TimePickerStyles";
 
-const TimePicker = ({ calculateSummary }) => {
+const TimePicker = ({ calculateSummary, onTimeSelected }) => {
   let startTimeRef = useRef(null);
   let endTimeRef = useRef(null);
 
@@ -39,6 +39,7 @@ const TimePicker = ({ calculateSummary }) => {
         setShowPicker({ ...showPicker, startHour: false });
         startTimeRef.current = selectedDate;
         setStartTime(startTimeRef.current);
+        onTimeSelected(startTimeRef.current, endTimeRef.current);
       },
     });
   };
@@ -60,6 +61,7 @@ const TimePicker = ({ calculateSummary }) => {
             selectedDate.getMinutes()
           );
         });
+        onTimeSelected(startTime, endTimeRef.current);
       },
     });
   };
@@ -74,6 +76,7 @@ const TimePicker = ({ calculateSummary }) => {
         setShowPicker({ ...showPicker, endHour: false });
         endTimeRef.current = selectedDate;
         setEndTime(endTimeRef.current);
+        onTimeSelected(startTimeRef.current, endTimeRef.current);
       },
     });
   };
@@ -95,6 +98,7 @@ const TimePicker = ({ calculateSummary }) => {
             selectedDate.getMinutes()
           );
         });
+        onTimeSelected(startTime, endTimeRef.current);
       },
     });
   };

@@ -9,26 +9,44 @@ const SuggestRaidModal = ({
   availability,
   calculateSummary,
   passeddate,
+  suggestedStartTime,
+  suggestedEndTime,
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date(Date.now()));
-  const [startTimeHour, setStartTimeHour] = useState(0);
-  const [startTimeMinute, setStartTimeMinute] = useState(0);
-  const [endTimeHour, setEndTimeHour] = useState(0);
-  const [endTimeMinute, setEndTimeMinute] = useState(0);
+  const [startTime, setStartTime] = useState(() => {});
+  const [endTime, setEndTime] = useState(() => {});
 
-  const { startTime: suggestedStartTime, endTime: suggestedEndTime } =
-    calculateSummary();
+  const handleTimeSelected = (selectedStartTime, selectedEndTime) => {
+    setStartTime(selectedStartTime);
+    setEndTime(selectedEndTime);
+  };
 
   const handleSuggestRaid = () => {
+    const suggestedBy = "user-1"; // Replace with the actual user ID or name
+    const userIDs = ["user-1", "user-2", "user-3"]; // Replace with the actual user IDs
+    const groupIDs = ["group-1"]; // Replace with the actual group IDs
+
+    const formattedStartTime =
+      startTime.getHours().toString().padStart(2, "0") +
+      ":" +
+      startTime.getMinutes().toString().padStart(2, "0");
+    const formattedEndTime =
+      endTime.getHours().toString().padStart(2, "0") +
+      ":" +
+      endTime.getMinutes().toString().padStart(2, "0");
+
     console.log(
       "Suggest Raid:",
       title,
-      description,
       passeddate,
-      suggestedStartTime,
-      suggestedEndTime
+      formattedStartTime,
+      formattedEndTime,
+      suggestedBy,
+      userIDs,
+      groupIDs,
+      description
     );
   };
 
@@ -61,7 +79,10 @@ const SuggestRaidModal = ({
             <Text style={styles.dateValue}>{date.toLocaleDateString()}</Text>
           </View>
           <View style={styles.timeContainer}>
-            <TimePicker calculateSummary={calculateSummary} />
+            <TimePicker
+              calculateSummary={calculateSummary}
+              onTimeSelected={handleTimeSelected}
+            />
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleSuggestRaid}>
