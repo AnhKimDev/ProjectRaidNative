@@ -87,6 +87,7 @@ export default StyleSheet.create({
   },
   lefthourCell: {
     ...styles.cell,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     fontSize: 30,

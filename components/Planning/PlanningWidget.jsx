@@ -66,6 +66,11 @@ const PlanningWidget = () => {
       return { ...prevSelectedHours, [formattedDate]: existingHours };
     });
   };
+  const handleHourRowPress = (hour) => {
+    weekdays.forEach((day) => {
+      handleHourPress(day, hour);
+    });
+  };
 
   useEffect(() => {
     MockDatabaseAdapter.getAvailabilityByUser(
@@ -236,9 +241,17 @@ const PlanningWidget = () => {
               {Array(HOURS_IN_A_DAY)
                 .fill(0)
                 .map((_, hour) => (
-                  <Text key={hour} style={styles.lefthourCell}>
-                    {hour}
-                  </Text>
+                  <View style={styles.lefthourCell}>
+                    <TouchableOpacity>
+                      <Text
+                        key={hour}
+                        style={styles.lefthourCell}
+                        onPress={() => handleHourRowPress(hour)}
+                      >
+                        {hour}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 ))}
             </View>
             {renderHours()}
