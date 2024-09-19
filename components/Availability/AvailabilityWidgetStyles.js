@@ -48,6 +48,7 @@ export default StyleSheet.create({
   },
   lefthourCell: {
     ...styles.cell,
+    flex: 1,
     fontSize: 30,
     margin,
     color: colors.white,

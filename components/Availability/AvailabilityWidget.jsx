@@ -180,6 +180,11 @@ const AvailabilityWidget = () => {
     );
     //console.log("Updated highlighted hours:", highlightedHours);
   };
+  const handleHourRowPress = (hour) => {
+    users.forEach((user) => {
+      handleHourPress(date, hour, user.userID);
+    });
+  };
   const handleReset = () => {
     //console.log("before reset", highlightedHours);
     //console.log("availability", availability);
@@ -286,9 +291,17 @@ const AvailabilityWidget = () => {
         {Array(HOURS_IN_A_DAY)
           .fill(0)
           .map((_, hour) => (
-            <Text key={hour} style={styles.lefthourCell}>
-              {hour}
-            </Text>
+            <View style={styles.lefthourCell}>
+              <TouchableOpacity>
+                <Text
+                  key={hour}
+                  style={styles.lefthourCell}
+                  onPress={() => handleHourRowPress(hour)}
+                >
+                  {hour}
+                </Text>
+              </TouchableOpacity>
+            </View>
           ))}
       </View>
     );
