@@ -5,7 +5,7 @@ import {
   User,
   Event,
 } from "./../interface/DatabaseInterface";
-import { groups, users, availability } from "./../mockData";
+import { groups, users, availability, events } from "./../mockData";
 
 export class MockDatabaseAdapter implements DatabaseInterface {
   private mockData: {
@@ -17,7 +17,7 @@ export class MockDatabaseAdapter implements DatabaseInterface {
     availability,
     groups,
     users,
-    events: [],
+    events,
   };
 
   async getAvailabilityByUser(
@@ -199,7 +199,7 @@ export class MockDatabaseAdapter implements DatabaseInterface {
     );
   }
 
-  async getEvent(eventID: number): Promise<Event> {
+  async getEvent(eventID: string): Promise<Event> {
     return this.mockData.events.find((event) => event.eventID === eventID);
   }
 
@@ -209,33 +209,38 @@ export class MockDatabaseAdapter implements DatabaseInterface {
 
   async createEvent(
     title: string,
-    description: string,
-    startTime: Date,
-    endTime: Date,
-    userIDs: string[],
-    groupIDs: string[]
-  ): Promise<Event> {
+    date: string,
+    startTime: string,
+    endTime: string,
+    suggestedBy: string,
+    userIDs?: string[],
+    groupIDs?: string[],
+    description?: string
+  ): Promise<void> {
     const newEvent: Event = {
-      eventID: this.mockData.events.length + 1,
+      eventID: String(this.mockData.events.length + 1),
       title,
       description,
+      date,
       startTime,
       endTime,
+      suggestedBy,
       userIDs,
       groupIDs,
     };
     this.mockData.events.push(newEvent);
-    return newEvent;
   }
 
   async updateEvent(
-    eventID: number,
+    eventID: string,
     title: string,
-    description: string,
-    startTime: Date,
-    endTime: Date,
-    userIDs: string[],
-    groupIDs: string[]
+    date: string,
+    startTime: string,
+    endTime: string,
+    suggestedBy: string,
+    userIDs?: string[],
+    groupIDs?: string[],
+    description?: string
   ): Promise<void> {
     const event = this.mockData.events.find(
       (event) => event.eventID === eventID
@@ -243,17 +248,22 @@ export class MockDatabaseAdapter implements DatabaseInterface {
     if (event) {
       event.title = title;
       event.description = description;
+      event.date = date;
       event.startTime = startTime;
       event.endTime = endTime;
+      event.suggestedBy = suggestedBy;
       event.userIDs = userIDs;
       event.groupIDs = groupIDs;
     }
   }
 
-  async deleteEvent(eventID: number): Promise<void> {
-    this.mockData.events = this.mockData.events.filter(
-      (event) => event.eventID !== eventID
+  async deleteEvent(eventID: string): Promise<void> {
+    const index = this.mockData.events.findIndex(
+      (event) => event.eventID === eventID
     );
+    if (index !== -1) {
+      this.mockData.events.splice(index, 1);
+    }
   }
 }
 

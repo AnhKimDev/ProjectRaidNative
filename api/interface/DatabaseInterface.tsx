@@ -37,26 +37,30 @@ export interface DatabaseInterface {
   deleteUser(userID: number): Promise<void>;
 
   // Events API methods
-  getEvent(eventID: number): Promise<Event>;
+  getEvent(eventID: string): Promise<Event>;
   getEvents(): Promise<Event[]>;
   createEvent(
     title: string,
-    description: string,
-    startTime: Date,
-    endTime: Date,
-    userIDs: string[],
-    groupIDs: string[]
-  ): Promise<Event>;
-  updateEvent(
-    eventID: number,
-    title: string,
-    description: string,
-    startTime: Date,
-    endTime: Date,
-    userIDs: string[],
-    groupIDs: string[]
+    date: string,
+    startTime: string,
+    endTime: string,
+    suggestedBy: string,
+    userIDs?: string[],
+    groupIDs?: string[],
+    description?: string
   ): Promise<void>;
-  deleteEvent(eventID: number): Promise<void>;
+  updateEvent(
+    eventID: string,
+    title: string,
+    date: string,
+    startTime: string,
+    endTime: string,
+    suggestedBy: string,
+    userIDs?: string[],
+    groupIDs?: string[],
+    description?: string
+  ): Promise<void>;
+  deleteEvent(eventID: string): Promise<void>;
 }
 
 export interface Group {
@@ -79,11 +83,13 @@ export interface Availability {
 }
 
 export interface Event {
-  eventID: number;
+  eventID: string;
   title: string;
   description?: string;
-  startTime: Date;
-  endTime: Date;
-  userIDs: string[];
-  groupIDs: string[];
+  date: string;
+  startTime: string;
+  endTime: string;
+  suggestedBy: string;
+  userIDs?: string[];
+  groupIDs?: string[];
 }

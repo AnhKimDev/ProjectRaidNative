@@ -1,25 +1,70 @@
-// components/UpcomingEvents.js
-import React from "react";
-import { View, Text, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import styles from "./UpcomingEventsStyles";
-
-const events = [
-  { id: 1, title: "Event 1", date: "2023-03-01" },
-  { id: 2, title: "Event 2", date: "2023-03-05" },
-  { id: 3, title: "Event 3", date: "2023-03-10" },
-  // Add more events here...
-];
+import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
 
 const UpcomingEvents = () => {
+  const [events, setEvents] = useState([]);
+  const [isDetailsOpen, setIsDetailsOpen] = useState({}); // Initialize an empty object
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const eventsFromAdapter = await MockDatabaseAdapter.getEvents();
+      //console.log(eventsFromAdapter);
+      setEvents(eventsFromAdapter);
+      const initialIsDetailsOpen = eventsFromAdapter.reduce(
+        (acc, event) => ({ ...acc, [event.eventID]: false }),
+        {}
+      );
+      setIsDetailsOpen(initialIsDetailsOpen);
+    };
+    fetchEvents();
+  }, []);
+
+  const handleToggleDetails = (eventID) => {
+    setIsDetailsOpen((prevIsDetailsOpen) => ({
+      ...prevIsDetailsOpen,
+      [eventID]: !prevIsDetailsOpen[eventID],
+    }));
+  };
+
   return (
     <View style={styles.upcomingEventsContainer}>
       <Text style={styles.upcomingEventsTitle}>Upcoming Events</Text>
       <ScrollView>
-        {events.map((item) => (
-          <View key={item.id} style={styles.eventItem}>
-            <Text style={styles.eventTitle}>{item.title}</Text>
-            <Text style={styles.eventDate}>{item.date}</Text>
-          </View>
+        {events.map((event) => (
+          <TouchableOpacity
+            key={event.eventID}
+            style={styles.eventItem}
+            onPress={() => handleToggleDetails(event.eventID)}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+              }}
+            >
+              <Text style={styles.eventTitle}>{event.title}</Text>
+
+              <View style={{ flexDirection: "column", alignItems: "flex-end" }}>
+                <Text style={styles.eventDate}>{event.date}</Text>
+                <Text
+                  style={styles.eventTime}
+                >{`${event.startTime} - ${event.endTime}`}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              {isDetailsOpen[event.eventID] ? (
+                <View style={styles.eventDetailsExtension}>
+                  <Text>Description: {event.description}</Text>
+                  <Text>Suggested by: {event.suggestedBy}</Text>
+                  <Text>User IDs: {event.userIDs.join(", ")}</Text>
+                  <Text>Group IDs: {event.groupIDs.join(", ")}</Text>
+                </View>
+              ) : (
+                <View style={styles.eventDetailsExtension} />
+              )}
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </View>

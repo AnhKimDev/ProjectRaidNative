@@ -13,7 +13,8 @@ export default StyleSheet.create({
     padding: 16,
     margin: 4,
     borderRadius: 8,
-    maxHeight: 400,
+    maxHeight: 300,
+    overflow: "hidden",
   },
 
   upcomingEventsTitle: {
@@ -27,31 +28,50 @@ export default StyleSheet.create({
   },
 
   eventItem: {
-    flexGrow: 1,
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
     backgroundColor: "beige",
+    flexDirection: "column",
+    flex: 1,
   },
 
   eventTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    flex: 1, // Add this to make the event title take up the available space
   },
 
   eventDate: {
     fontSize: 16,
     color: "#666",
+    marginRight: 10, // Add some margin to separate the date and time
   },
 
-  eventsContainer: {
+  eventTime: {
+    fontSize: 16,
+    color: "#666",
+  },
+
+  eventDetailsToggle: {
+    fontSize: 16,
+    color: "#666",
+  },
+
+  eventDetailsContainer: {
+    padding: 10,
+    flexDirection: "column",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+
+  eventDetailsText: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 5, // Add some margin between the details text
+  },
+
+  eventDetailsExtension: {
     flexGrow: 1,
-    flexWrap: "no-wrap",
-    paddingHorizontal: 16, // Add horizontal padding
-    paddingVertical: 8, // Add vertical padding
-    backgroundColor: colors.primary,
-    borderRadius: 8,
-    maxHeight: 400,
-    overflow: "hidden",
   },
 });
