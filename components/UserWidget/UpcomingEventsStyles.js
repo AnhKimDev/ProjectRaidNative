@@ -8,17 +8,11 @@ import {
 } from "../../constants/constants";
 
 export default StyleSheet.create({
-  upcomingEventsContainer: {
-    flexGrow: 1,
-    padding: 16,
-    margin: 4,
-    borderRadius: 8,
-    maxHeight: 300,
-    overflow: "hidden",
-  },
+  upcomingEventsContainer: {},
 
   upcomingEventsTitle: {
     fontSize: 24,
+    alignSelf: "center",
     fontWeight: "bold",
     color: colors.white,
     textShadowColor: colors.black,

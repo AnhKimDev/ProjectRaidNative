@@ -13,7 +13,9 @@ const UserWidget = () => {
         <UserGroups />
       </View>
       <View style={styles.container}>
-        <UpcomingEvents />
+        <View style={styles.upcomingEventsContainer}>
+          <UpcomingEvents />
+        </View>
       </View>
     </ScrollView>
   );

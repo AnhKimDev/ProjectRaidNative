@@ -25,4 +25,13 @@ export default StyleSheet.create({
     marginBottom: 10,
     flexDirection: "column",
   },
+
+  upcomingEventsContainer: {
+    flexGrow: 1,
+    padding: 16,
+    margin: 4,
+    borderRadius: 8,
+    overflow: "hidden",
+    maxHeight: 300,
+  },
 });

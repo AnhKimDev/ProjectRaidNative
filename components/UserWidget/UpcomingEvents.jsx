@@ -29,7 +29,7 @@ const UpcomingEvents = () => {
   };
 
   return (
-    <View style={styles.upcomingEventsContainer}>
+    <View>
       <Text style={styles.upcomingEventsTitle}>Upcoming Events</Text>
       <ScrollView>
         {events.map((event) => (
