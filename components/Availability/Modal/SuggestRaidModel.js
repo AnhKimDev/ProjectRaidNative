@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal } from "react-native";
 import styles from "./SuggestRaidModalStyles";
 import TimePicker from "./TimePicker";
+import MockDatabaseAdapter from "../../../api/adapter/mock-database-adapter";
 
 const SuggestRaidModal = ({
   visible,
@@ -15,30 +16,54 @@ const SuggestRaidModal = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date(Date.now()));
-  const [startTime, setStartTime] = useState(() => {});
-  const [endTime, setEndTime] = useState(() => {});
+  const [startTime, setStartTime] = useState(new Date(Date.now()));
+  const [endTime, setEndTime] = useState(new Date(Date.now()));
 
   const handleTimeSelected = (selectedStartTime, selectedEndTime) => {
     setStartTime(selectedStartTime);
     setEndTime(selectedEndTime);
   };
 
+  useEffect(() => {
+    //console.log(suggestedStartTime, suggestedEndTime);
+    setStartTime(suggestedStartTime);
+    setEndTime(suggestedEndTime);
+  }, [suggestedStartTime, suggestedEndTime]);
+
   const handleSuggestRaid = () => {
     const suggestedBy = "user-1"; // Replace with the actual user ID or name
     const userIDs = ["user-1", "user-2", "user-3"]; // Replace with the actual user IDs
     const groupIDs = ["group-1"]; // Replace with the actual group IDs
 
-    const formattedStartTime =
-      startTime.getHours().toString().padStart(2, "0") +
-      ":" +
-      startTime.getMinutes().toString().padStart(2, "0");
-    const formattedEndTime =
-      endTime.getHours().toString().padStart(2, "0") +
-      ":" +
-      endTime.getMinutes().toString().padStart(2, "0");
+    let formatTime = (date) => {
+      return (
+        date.getHours().toString().padStart(2, "0") +
+        ":" +
+        date.getMinutes().toString().padStart(2, "0")
+      );
+    };
+
+    let formattedStartTime = formatTime(new Date());
+    let formattedEndTime = formatTime(new Date());
+
+    if (startTime instanceof Date && endTime instanceof Date) {
+      formattedStartTime = formatTime(startTime);
+      formattedEndTime = formatTime(endTime);
+    }
 
     console.log(
       "Suggest Raid:",
+      title,
+      passeddate,
+      formattedStartTime,
+      formattedEndTime,
+      suggestedBy,
+      userIDs,
+      groupIDs,
+      description
+    );
+
+    MockDatabaseAdapter.createEvent(
       title,
       passeddate,
       formattedStartTime,

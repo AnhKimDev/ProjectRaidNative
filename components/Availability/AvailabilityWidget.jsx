@@ -165,8 +165,7 @@ const AvailabilityWidget = () => {
       }
 
       const userDateEntry = newHighlightedHours[userID][userDateEntryIndex];
-      const hourIndex = userDateEntry.hours.indexOf(hour);
-      if (hourIndex === -1) {
+      if (!userDateEntry.hours.includes(hour)) {
         userDateEntry.hours.push(hour);
       } else {
         userDateEntry.hours = userDateEntry.hours.filter((h) => h !== hour);
@@ -178,7 +177,6 @@ const AvailabilityWidget = () => {
     console.log(
       `Hour ${hour} selected for user ${userID} on date ${convertedDate}`
     );
-    //console.log("Updated highlighted hours:", highlightedHours);
   };
   const handleHourRowPress = (hour) => {
     users.forEach((user) => {
@@ -197,7 +195,7 @@ const AvailabilityWidget = () => {
       <TouchableOpacity
         key={`${date}-${hour}-${user.userID}`}
         style={[styles.hourCell, availabilityStatus]}
-        onPress={() => handleHourPress(date, index, user.userID)}
+        onPress={() => handleHourPress(date, hour, user.userID)}
       >
         <Text style={styles.hourText}>{hour}</Text>
       </TouchableOpacity>
@@ -213,7 +211,7 @@ const AvailabilityWidget = () => {
     ));
   };
   const convertHourToDate = (hour) => {
-    const date = new Date();
+    const date = new Date(Date.now());
     date.setHours(hour);
     date.setMinutes(0);
     date.setSeconds(0);
