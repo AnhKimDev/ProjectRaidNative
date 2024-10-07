@@ -49,7 +49,7 @@ export default function App() {
             color: "white",
           }}
         >
-          Skip Login
+          Login
         </Link>
       </TouchableOpacity>
     </View>
