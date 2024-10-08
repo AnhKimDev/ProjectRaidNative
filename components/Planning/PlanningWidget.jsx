@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import styles from "./PlanningWidgetStyles";
 import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
+import CosmosdbAdapterInstance from "../../api/adapter/cosmosdb-adapter";
 
 const weekdays = [
   "Monday",
@@ -73,7 +74,7 @@ const PlanningWidget = () => {
   };
 
   useEffect(() => {
-    MockDatabaseAdapter.getAvailabilityByUser(
+    CosmosdbAdapterInstance.getAvailabilityByUser(
       user.userID,
       startDate,
       endDate
@@ -158,7 +159,7 @@ const PlanningWidget = () => {
       // Reset the selected hours state
       setSelectedHoursState({});
       // Fetch the updated availability data
-      MockDatabaseAdapter.getAvailabilityByUser(
+      CosmosdbAdapterInstance.getAvailabilityByUser(
         user.userID,
         startDate,
         endDate

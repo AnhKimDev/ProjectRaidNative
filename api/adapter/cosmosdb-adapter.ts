@@ -1,109 +1,59 @@
-import {
-  DatabaseInterface,
-  Availability,
-  Group,
-  User,
-  Event,
-} from "../interface/DatabaseInterface";
+import axios from "axios";
 
-export class cosmosDBadapter implements DatabaseInterface {
-  private mockData: {
-    availability: Availability[];
-    groups: Group[];
-    users: User[];
-    events: Event[];
-  };
-  getAvailabilityByUser(
-    userID: string,
-    startDate: Date,
-    endDate: Date
-  ): Promise<Availability[]> {
-    throw new Error("Method not implemented.");
+const getyyyymmdd = (date: Date) => {
+  if (!(date instanceof Date)) {
+    throw new Error(`Invalid date object: ${date}`);
   }
-  getAvailabilityByGroup(groupID: number, date: Date): Promise<Availability[]> {
-    throw new Error("Method not implemented.");
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid date: ${date}`);
   }
-  updateAvailabilityByUser(
-    userID: string,
-    startDate: Date,
-    endDate: Date,
-    hours: number[]
-  ): Promise<void> {
-    throw new Error("Method not implemented.");
+  return (
+    date.getFullYear() +
+    "-" +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + date.getDate()).slice(-2)
+  );
+};
+
+class CosmosdbAdapter {
+  adapter: any;
+  constructor() {
+    this.adapter = axios.create({
+      baseURL: "http://10.0.2.2:5050/v1/",
+      timeout: 5000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
-  updateAvailabilityByGroup(
-    dateIso: string,
-    startDate: Date,
-    endDate: Date,
-    usersAvailability: number[]
-  ): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async getAvailabilityByUser(userID: string, startDate: Date, endDate: Date) {
+    const startDateIso = getyyyymmdd(startDate);
+    const endDateIso = getyyyymmdd(endDate);
+    const response = await this.adapter.post(
+      "/availability/getAvailabilityByUser",
+      {
+        userID,
+        startDate: startDateIso,
+        endDate: endDateIso,
+      }
+    );
+    return response.data;
   }
-  getGroupByGroupID(groupID: string): Promise<Group> {
-    throw new Error("Method not implemented.");
-  }
-  getGroupsByUserID(userID: string): Promise<Group[]> {
-    throw new Error("Method not implemented.");
-  }
-  createGroup(groupName: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  updateGroup(groupID: number, groupName: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  deleteGroup(groupID: number): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  getUser(userID: number): Promise<User> {
-    throw new Error("Method not implemented.");
-  }
-  getUsersByGroupIDs(groupIDs: string[]): Promise<User[]> {
-    throw new Error("Method not implemented.");
-  }
-  createUser(userName: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  updateUser(userID: number, userName: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  deleteUser(userID: number): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  getEvent(eventID: string): Promise<Event> {
-    throw new Error("Method not implemented.");
-  }
-  getEvents(): Promise<Event[]> {
-    throw new Error("Method not implemented.");
-  }
-  createEvent(
-    title: string,
-    date: string,
-    startTime: string,
-    endTime: string,
-    suggestedBy: string,
-    userIDs?: string[],
-    groupIDs?: string[],
-    description?: string
-  ): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  updateEvent(
-    eventID: string,
-    title: string,
-    date: string,
-    startTime: string,
-    endTime: string,
-    suggestedBy: string,
-    userIDs?: string[],
-    groupIDs?: string[],
-    description?: string
-  ): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  deleteEvent(eventID: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async getAvailabilityByGroup(groupID: number, date: Date) {
+    const DateISO = getyyyymmdd(date);
+    const response = await this.adapter.post(
+      "/availability/getAvailabilityByGroup",
+      {
+        groupID,
+        DateISO,
+      }
+    );
+    return response.data;
   }
 }
 
-const cosmosdbAdapterInstance = new cosmosDBadapter();
-export default cosmosdbAdapterInstance;
+const CosmosdbAdapterInstance = new CosmosdbAdapter();
+export default CosmosdbAdapterInstance;
