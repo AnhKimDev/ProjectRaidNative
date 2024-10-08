@@ -53,6 +53,61 @@ class CosmosdbAdapter {
     );
     return response.data;
   }
+
+  async getGroupByGroupID(groupID: string) {
+    const response = await this.adapter.post("/groups/getGroupByGroupID", {
+      groupID,
+    });
+    return response.data;
+  }
+
+  async getGroupsByUserID(userID: string) {
+    const response = await this.adapter.post("/groups/getGroupsByUserID", {
+      userID,
+    });
+    return response.data;
+  }
+
+  async getUserByUserID(userID: number) {
+    const response = await this.adapter.post("/groups/getUserByUserID", {
+      userID,
+    });
+    return response.data;
+  }
+
+  async getEventByEventID(eventID: string): Promise<Event> {
+    const response = await this.adapter.post("/events/getEventByEventID", {
+      eventID,
+    });
+    return response.data;
+  }
+
+  async getEvents(): Promise<Event[]> {
+    const response = await this.adapter.post("/events/getEvents", {});
+    return response.data;
+  }
+
+  async updateAvailabilityByUser(
+    userID: string,
+    startDate: Date,
+    endDate: Date,
+    hours: { [dateIso: string]: number[] }
+  ): Promise<void> {
+    const availabilityData = Object.keys(hours).map((dateIso) => ({
+      userID,
+      date: dateIso,
+      hours: hours[dateIso],
+    }));
+
+    try {
+      const response = await this.adapter.post("/updateAvailabilityByUser  ", {
+        availabilityData,
+      });
+      console.log("Availability updated successfully");
+    } catch (error) {
+      console.error("Error updating availability:", error);
+    }
+  }
 }
 
 const CosmosdbAdapterInstance = new CosmosdbAdapter();
