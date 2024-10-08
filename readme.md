@@ -30,16 +30,28 @@ Project Raid is a versatile organizational tool designed to enhance group coordi
   Benefit from a platform that evolves based on user feedback and community contributions.
   <br>
 
+## Get Started
+
+Follow these steps to get started:
+
+- git clone: copy the project
+- npm install: install all dependencies
+- npm start: starts expo, you can download the expo app via your smartphone to bugfix or use an virtual device
+
+Currently the mockdata is used in a non-persistent datastorage, this will change in future updates.
+
 ## Changelog
 
 ### Planned for October 2024
 
 - Final Presentation.
+- Connect to the azure infrastructure and use real data.
+- Authentification
 
-### Planned for September 2024
+### September 2024
 
-- Complete the frontend.
-- Set up the backend in AWS Cloud with a database, S3 bucket, and EC2 instance.
+- Completed main functions for the frontend app.
+- Set up the backend via Terraform in Azure with a Cosmos DB, Blobstorage, and Azure Functions.
 - Potentially implement a CI/CD pipeline using Terraform and GitHub Actions.
 
 ### August 2024
