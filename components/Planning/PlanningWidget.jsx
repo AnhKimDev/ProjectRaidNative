@@ -150,7 +150,7 @@ const PlanningWidget = () => {
       endDate,
       updatedSelectedHours
     );
-    MockDatabaseAdapter.updateAvailabilityByUser(
+    CosmosdbAdapterInstance.updateAvailabilityByUser(
       user.userID,
       startDate,
       endDate,

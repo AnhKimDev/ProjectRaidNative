@@ -87,25 +87,101 @@ class CosmosdbAdapter {
     return response.data;
   }
 
+  addAvailabilityItem(hours: { [hour: string]: boolean }): number[] {
+    const newHours = Object.keys(hours)
+      .filter((hour) => hours[hour])
+      .map(Number);
+    return newHours;
+  }
+
+  removeAvailabilityItem(existingHours: number[], hours: number[]): number[] {
+    const newHours = existingHours.filter((hour) => !hours.includes(hour));
+    return newHours;
+  }
+
+  compareAndSyncHours(
+    existingHours: number[],
+    hours: { [hour: string]: boolean }
+  ): number[] {
+    const newHours = existingHours.slice();
+
+    Object.keys(hours).forEach((hour) => {
+      const hourNum = parseInt(hour);
+      if (hours[hour]) {
+        if (!newHours.includes(hourNum)) {
+          newHours.push(hourNum);
+        } else {
+          const index = newHours.indexOf(hourNum);
+          newHours.splice(index, 1);
+        }
+      }
+    });
+
+    return newHours;
+  }
+
   async updateAvailabilityByUser(
     userID: string,
     startDate: Date,
     endDate: Date,
-    hours: { [dateIso: string]: number[] }
+    hours: { [dateIso: string]: { [hour: string]: boolean } }
   ): Promise<void> {
-    const availabilityData = Object.keys(hours).map((dateIso) => ({
-      userID,
-      date: dateIso,
-      hours: hours[dateIso],
-    }));
+    const startDateIso = getyyyymmdd(startDate);
+    const endDateIso = getyyyymmdd(endDate);
 
     try {
-      const response = await this.adapter.post("/updateAvailabilityByUser  ", {
+      let availabilityData = await this.getAvailabilityByUser(
+        userID,
+        startDate,
+        endDate
+      );
+
+      // Manipulate availabilityData
+      console.log("Iterating over hours...");
+      Object.keys(hours).forEach((dateIso) => {
+        console.log("Processing dateIso:", dateIso);
+        let existingItemIndex = availabilityData.findIndex(
+          (item) => item.date === dateIso && item.userID === userID
+        );
+
+        if (dateIso >= startDateIso && dateIso <= endDateIso) {
+          console.log("DateIso is within range");
+          if (existingItemIndex !== -1) {
+            console.log("Existing item found");
+            const existingItem = availabilityData[existingItemIndex];
+            existingItem.hours = this.compareAndSyncHours(
+              existingItem.hours,
+              hours[dateIso]
+            );
+          } else {
+            console.log("No existing item found, creating new one");
+            const newHours = this.addAvailabilityItem(hours[dateIso]);
+            const newItem = {
+              userID,
+              date: dateIso,
+              hours: newHours,
+            };
+            availabilityData.push(newItem);
+          }
+        } else {
+          console.log("DateIso is out of range");
+          if (existingItemIndex !== -1) {
+            availabilityData.splice(existingItemIndex, 1);
+          }
+        }
+      });
+
+      console.log("Updated availability data:", availabilityData);
+
+      // Send the updated availabilityData to the backend
+      await this.adapter.post("/availability/updateAvailabilityByUser ", {
         availabilityData,
       });
+
       console.log("Availability updated successfully");
     } catch (error) {
       console.error("Error updating availability:", error);
+      throw error; // Re-throw the error to be handled by the caller
     }
   }
 }
