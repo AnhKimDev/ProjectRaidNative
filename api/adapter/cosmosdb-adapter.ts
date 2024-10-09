@@ -55,35 +55,53 @@ class CosmosdbAdapter {
   }
 
   async getGroupByGroupID(groupID: string) {
-    const response = await this.adapter.post("/groups/getGroupByGroupID", {
+    const response = await this.adapter.post("/group/getGroupByGroupID", {
       groupID,
     });
     return response.data;
   }
 
   async getGroupsByUserID(userID: string) {
-    const response = await this.adapter.post("/groups/getGroupsByUserID", {
+    const response = await this.adapter.post("/group/getGroupsByUserID", {
       userID,
     });
     return response.data;
   }
 
-  async getUserByUserID(userID: number) {
-    const response = await this.adapter.post("/groups/getUserByUserID", {
+  async getUsersByGroupIDs(groupIDs: string) {
+    const response = await this.adapter.post("/group/getUsersByGroupIDs", {
+      groupIDs,
+    });
+    return response.data;
+  }
+
+  async getUserByUserID(userID: string) {
+    const response = await this.adapter.post("/user/getUserByUserID", {
       userID,
     });
     return response.data;
   }
 
   async getEventByEventID(eventID: string): Promise<Event> {
-    const response = await this.adapter.post("/events/getEventByEventID", {
+    const response = await this.adapter.post("/event/getEventByEventID", {
       eventID,
     });
     return response.data;
   }
 
+  async getEventsByUserID(userID: string): Promise<Event> {
+    try {
+      const response = await this.adapter.post("/event/getEventsByUserID", {
+        userID,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error getting events by user ID:", error);
+    }
+  }
+
   async getEvents(): Promise<Event[]> {
-    const response = await this.adapter.post("/events/getEvents", {});
+    const response = await this.adapter.post("/event/getEvents", {});
     return response.data;
   }
 

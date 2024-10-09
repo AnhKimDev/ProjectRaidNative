@@ -2,16 +2,23 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import styles from "./UpcomingEventsStyles";
 import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
+import CosmosdbAdapterInstance from "../../api/adapter/cosmosdb-adapter";
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState([]);
   const [isDetailsOpen, setIsDetailsOpen] = useState({}); // Initialize an empty object
 
+  const userID = "user-1";
   useEffect(() => {
+    console.log("userwidget: upcoming events - useeffect");
     const fetchEvents = async () => {
-      const eventsFromAdapter = await MockDatabaseAdapter.getEvents();
-      //console.log(eventsFromAdapter);
+      console.log("trying to fetch events...");
+      const eventsFromAdapter =
+        await CosmosdbAdapterInstance.getEventsByUserID(userID);
+      console.log("events fetched successfully");
+
       setEvents(eventsFromAdapter);
+
       const initialIsDetailsOpen = eventsFromAdapter.reduce(
         (acc, event) => ({ ...acc, [event.eventID]: false }),
         {}
