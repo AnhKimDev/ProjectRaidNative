@@ -48,10 +48,23 @@ class CosmosdbAdapter {
       "/availability/getAvailabilityByGroup",
       {
         groupID,
-        DateISO,
+        date: DateISO,
       }
     );
-    return response.data;
+
+    console.log(response.data);
+
+    // Assuming the backend returns an array of availability objects
+    const availabilityData = response.data;
+
+    // Filter and transform the data to match the local method's return structure
+    return availabilityData
+      .filter((availability) => availability.date === DateISO)
+      .map(({ userID, date, hours }) => ({
+        userID,
+        date,
+        hours,
+      }));
   }
 
   async getGroupByGroupID(groupID: string) {
@@ -196,9 +209,34 @@ class CosmosdbAdapter {
         availabilityData,
       });
 
-      console.log("Availability updated successfully");
+      console.log("updateAvailabilityByUser successfull");
     } catch (error) {
-      console.error("Error updating availability:", error);
+      console.error("Error updateAvailabilityByUser:", error);
+      throw error; // Re-throw the error to be handled by the caller
+    }
+  }
+
+  async updateAvailabilityByGroup(
+    dateIso: string,
+    startDate: Date,
+    endDate: Date,
+    usersAvailability: {
+      [userID: string]: { [hour: string]: boolean };
+    }
+  ) {
+    try {
+      for (const userID in usersAvailability) {
+        const userHours = { [dateIso]: usersAvailability[userID] };
+        await this.updateAvailabilityByUser(
+          userID,
+          startDate,
+          endDate,
+          userHours
+        );
+      }
+      console.log("updateAvailabilityByGroup  successfull");
+    } catch (error) {
+      console.error("Error updating updateAvailabilityByGroup:", error);
       throw error; // Re-throw the error to be handled by the caller
     }
   }

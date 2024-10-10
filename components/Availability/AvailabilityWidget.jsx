@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Header from "./Header";
 import Summary from "./Summary";
 import SuggestRaidModal from "./Modal/SuggestRaidModel";
-import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
+import CosmosdbAdapterInstance from "../../api/adapter/cosmosdb-adapter";
 
 const HOURS_IN_A_DAY = 24;
 const users = [
@@ -75,7 +75,7 @@ const AvailabilityWidget = () => {
   useEffect(() => {
     const fetchAvailability = async () => {
       const groupID = "group-1";
-      const availability = await MockDatabaseAdapter.getAvailabilityByGroup(
+      const availability = await CosmosdbAdapterInstance.getAvailabilityByGroup(
         groupID,
         date
       );
@@ -108,7 +108,7 @@ const AvailabilityWidget = () => {
       const endDate = new Date(startDate);
       const usersAvailability = availabilityByDate[dateIso];
 
-      MockDatabaseAdapter.updateAvailabilityByGroup(
+      CosmosdbAdapterInstance.updateAvailabilityByGroup(
         dateIso,
         startDate,
         endDate,

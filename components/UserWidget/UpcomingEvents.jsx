@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import styles from "./UpcomingEventsStyles";
-import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
 import CosmosdbAdapterInstance from "../../api/adapter/cosmosdb-adapter";
 
 const UpcomingEvents = () => {

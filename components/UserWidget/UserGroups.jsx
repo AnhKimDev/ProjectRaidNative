@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, ScrollView } from "react-native";
 import styles from "./UserGroupsStyles";
-import MockDatabaseAdapter from "../../api/adapter/mock-database-adapter";
 import CosmosdbAdapterInstance from "../../api/adapter/cosmosdb-adapter";
 
 const getRandomImageId = () => Math.floor(Math.random() * 1084);
